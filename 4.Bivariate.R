@@ -70,74 +70,205 @@ Rst_Pre_Mean <- stackApply(Rst_Pre_Stk, indices =  rep(1,nlayers(Rst_Pre_Stk)), 
 #Stack <- stack(Rst_Tem_Mean,Rst_Pre_Mean)
 
 #-> Get Shape of germany
-Germany <- getData("GADM", country="DEU", level=1, path=Shapes_Fo)
-Germany <- spTransform(Germany,CRS=CRS("+init=epsg:31467"))
+Germany_1 <- getData("GADM", country="DEU", level=1, path=Shapes_Fo)
+Germany_2 <- getData("GADM", country="DEU", level=2, path=Shapes_Fo)
+Germany_3 <- getData("GADM", country="DEU", level=3, path=Shapes_Fo)
+Germany_4 <- getData("GADM", country="DEU", level=4, path=Shapes_Fo)
 
-#-> Only Name_1 and CC_1 needed
-Germany <- Germany[,-(c(1,2,3,5,6,7,8,10))]
+#-> Add coordinate system
+Germany_1 <- spTransform(Germany_1,CRS=CRS("+init=epsg:31467"))
+Germany_2 <- spTransform(Germany_2,CRS=CRS("+init=epsg:31467"))
+Germany_3 <- spTransform(Germany_3,CRS=CRS("+init=epsg:31467"))
+Germany_4 <- spTransform(Germany_4,CRS=CRS("+init=epsg:31467"))
+
+#-> Only Name_*
+Germany_1 <- Germany_1[,(c(4))]
+Germany_2 <- Germany_2[,(c(7))]
+Germany_3 <- Germany_3[,(c(10))]
+Germany_4 <- Germany_4[,(c(10))]
+
+#-> Create ID
+Germany_1$ID <- seq(1,length(Germany_1$NAME_1))
+Germany_2$ID <- seq(1,length(Germany_2$NAME_2))
+Germany_3$ID <- seq(1,length(Germany_3$NAME_3))
+Germany_4$ID <- seq(1,length(Germany_4$NAME_4))
 
 #-> Extract the Mean Temperature by regions
-Zon_Mean_Temp <- extract(Rst_Tem_Mean, Germany, fun=mean, na.rm=TRUE, df=TRUE)
+Zon_Mean_Temp_1 <- extract(Rst_Tem_Mean, Germany_1, fun=mean, na.rm=TRUE, df=TRUE)
+Zon_Mean_Temp_2 <- extract(Rst_Tem_Mean, Germany_2, fun=mean, na.rm=TRUE, df=TRUE)
+Zon_Mean_Temp_3 <- extract(Rst_Tem_Mean, Germany_3, fun=mean, na.rm=TRUE, df=TRUE)
+Zon_Mean_Temp_4 <- extract(Rst_Tem_Mean, Germany_4, fun=mean, na.rm=TRUE, df=TRUE)
 
-#-> Extract the Mean Temperature by regions
-Zon_Mean_Preci <- extract(Rst_Pre_Mean, Germany, fun=mean, na.rm=TRUE, df=TRUE)
+#-> Extract the Mean Precipitation by regions
+Zon_Mean_Preci_1 <- extract(Rst_Pre_Mean, Germany_1, fun=mean, na.rm=TRUE, df=TRUE)
+Zon_Mean_Preci_2 <- extract(Rst_Pre_Mean, Germany_2, fun=mean, na.rm=TRUE, df=TRUE)
+Zon_Mean_Preci_3 <- extract(Rst_Pre_Mean, Germany_3, fun=mean, na.rm=TRUE, df=TRUE)
+Zon_Mean_Preci_4 <- extract(Rst_Pre_Mean, Germany_4, fun=mean, na.rm=TRUE, df=TRUE)
 
 #-> Create fields in SP object
-Germany$Temp_Mean <- 0
-Germany$Preci_Mean <- 0
+Germany_1$Temp_Mean <- 0
+Germany_1$Preci_Mean <- 0
+Germany_2$Temp_Mean <- 0
+Germany_2$Preci_Mean <- 0
+Germany_3$Temp_Mean <- 0
+Germany_3$Preci_Mean <- 0
+Germany_4$Temp_Mean <- 0
+Germany_4$Preci_Mean <- 0
 
-#-> Assign values from statistical Zone 
-for(i in 1:length(Germany$CC_1)){
-  for(j in 1: length(Germany$Temp_Mean)){
-    if(as.numeric(Germany$CC_1[i]) == Zon_Mean_Temp$ID[j]){
-      Germany$Temp_Mean[i] <- Zon_Mean_Temp$index_1[j]
+#-> Assign values from statistical Zone 1
+for(i in 1:length(Germany_1$ID)){
+  for(j in 1: length(Germany_1$Temp_Mean)){
+    if(as.numeric(Germany_1$ID[i]) == Zon_Mean_Temp_1$ID[j]){
+      Germany_1$Temp_Mean[i] <- Zon_Mean_Temp_1$index_1[j]
     }
   }
-  for(k in 1: length(Germany$Preci_Mean)){
-    if(as.numeric(Germany$CC_1[i]) == Zon_Mean_Preci$ID[k]){
-      Germany$Preci_Mean[i] <- Zon_Mean_Preci$index_1[i]
+  for(k in 1: length(Germany_1$Preci_Mean)){
+    if(as.numeric(Germany_1$ID[i]) == Zon_Mean_Preci_1$ID[k]){
+      Germany_1$Preci_Mean[i] <- Zon_Mean_Preci_1$index_1[k]
     }
   }
 }
 
-#-> PLot Temperature 
-Temp.palette <- rev(brewer.pal(n = 11, name = "RdYlBu"))
-spplot(Germany, "Temp_Mean",
-       main = "Mean Temperature",
-       col.regions = Temp.palette,
-       cuts = 10)
+#-> Assign values from statistical Zone 2
+for(i in 1:length(Germany_2$ID)){
+  for(j in 1: length(Germany_2$Temp_Mean)){
+    if(as.numeric(Germany_2$ID[i]) == Zon_Mean_Temp_2$ID[j]){
+      Germany_2$Temp_Mean[i] <- Zon_Mean_Temp_2$index_1[j]
+    }
+  }
+  for(k in 1: length(Germany_2$Preci_Mean)){
+    if(as.numeric(Germany_2$ID[i]) == Zon_Mean_Preci_2$ID[k]){
+      Germany_2$Preci_Mean[i] <- Zon_Mean_Preci_2$index_1[k]
+    }
+  }
+}
 
-#-> PLot Precipitation 
-Preci.palette <- brewer.pal(n = 11, name = "BrBG")
-spplot(Germany, "Preci_Mean",
-       main = "Mean Precipitation",
-       col.regions = Preci.palette,
-       cuts = 10)
+#-> Assign values from statistical Zone 3
+for(i in 1:length(Germany_3$ID)){
+  for(j in 1: length(Germany_3$Temp_Mean)){
+    if(as.numeric(Germany_3$ID[i]) == Zon_Mean_Temp_3$ID[j]){
+      Germany_3$Temp_Mean[i] <- Zon_Mean_Temp_3$index_1[j]
+    }
+  }
+  for(k in 1: length(Germany_3$Preci_Mean)){
+    if(as.numeric(Germany_3$ID[i]) == Zon_Mean_Preci_3$ID[k]){
+      Germany_3$Preci_Mean[i] <- Zon_Mean_Preci_3$index_1[k]
+    }
+  }
+}
 
-#-> Convert Shape to SF object
-Germany <- st_as_sf(Germany)
+#-> Assign values from statistical Zone 4
+for(i in 1:length(Germany_4$ID)){
+  for(j in 1: length(Germany_4$Temp_Mean)){
+    if(as.numeric(Germany_4$ID[i]) == Zon_Mean_Temp_4$ID[j]){
+      Germany_4$Temp_Mean[i] <- Zon_Mean_Temp_4$index_1[j]
+    }
+  }
+  for(k in 1: length(Germany_4$Preci_Mean)){
+    if(as.numeric(Germany_4$ID[i]) == Zon_Mean_Preci_4$ID[k]){
+      Germany_4$Preci_Mean[i] <- Zon_Mean_Preci_4$index_1[k]
+    }
+  }
+  print(paste0("Progress: ",(i*100/11302)))
+}
+
+#-> Convert geometry to SF object
+Germany_1 <- st_as_sf(Germany_1)
+Germany_2 <- st_as_sf(Germany_2)
+Germany_3 <- st_as_sf(Germany_3)
+Germany_4 <- st_as_sf(Germany_4)
 
 #############################################################################################################
 ########################################## Bivariate Map ####################################################
 #############################################################################################################
-Bivariate <- bi_class(Germany, x = Temp_Mean, y = Preci_Mean, style = "quantile", dim = 3)
+#-> Create Bivariate values
+Bivariate_1 <- bi_class(Germany_1, x = Temp_Mean, y = Preci_Mean, style = "quantile", dim = 3)
+Bivariate_2 <- bi_class(Germany_2, x = Temp_Mean, y = Preci_Mean, style = "quantile", dim = 3)
+Bivariate_3 <- bi_class(Germany_3, x = Temp_Mean, y = Preci_Mean, style = "quantile", dim = 3)
+Bivariate_4 <- bi_class(Germany_4, x = Temp_Mean, y = Preci_Mean, style = "quantile", dim = 3)
 
+#-> Save Bivariate Maps as gpkg
+setwd(Shapes_Fo)
+st_write(Bivariate_1, dsn="Bivariate_1.gpkg", layer='Bivariate')
+st_write(Bivariate_2, dsn="Bivariate_2.gpkg", layer='Bivariate')
+st_write(Bivariate_3, dsn="Bivariate_3.gpkg", layer='Bivariate')
+st_write(Bivariate_4, dsn="Bivariate_4.gpkg", layer='Bivariate')
+
+#-> Check classes
+unique(Bivariate_1$bi_class)
+unique(Bivariate_2$bi_class)
+unique(Bivariate_3$bi_class)
+unique(Bivariate_4$bi_class)
+
+#-> Delete "NA-NA" values
+Bivariate_3 <- Bivariate_3[!grepl("NA-NA", Bivariate_3$bi_class),]
+Bivariate_4 <- Bivariate_4[!grepl("NA-NA", Bivariate_4$bi_class),]
+
+#-> Bivariate map theme
 BivTheme <- theme(panel.background = element_blank(),
                plot.background = element_blank(),
                panel.grid = element_line(colour="white", size=1),
                plot.title = element_text(size = 130, color= "white"),
                axis.text = element_text(size = 50, color= "white")) 
 
-map <- ggplot() +
+#-> Bivariate ggplot level_1
+Biv_Map_1 <- ggplot() +
   #Title
-  ggtitle(bquote(bold('Bivariate') ~ 'mean values by region')) +
-  geom_sf(data = Bivariate, mapping = aes(fill = bi_class),
+  ggtitle(bquote(bold('Bivariate') ~ 'mean values by region L1')) +
+  #Geometry
+  geom_sf(data = Bivariate_1, mapping = aes(fill = bi_class),
           color = "#20231fff", size = 5,
           show.legend = FALSE) +
+  #Scale
   bi_scale_fill(pal = "GrPink", dim = 3) +
+  #Theme
   BivTheme
-  
-map
+
+#-> Bivariate ggplot level_2
+Biv_Map_2 <- ggplot() +
+  #Title
+  ggtitle(bquote(bold('Bivariate') ~ 'mean values by region L2')) +
+  #Geometry
+  geom_sf(data = Bivariate_2, mapping = aes(fill = bi_class),
+          color = "#20231fff", size = 1,
+          show.legend = FALSE) +
+  #Scale
+  bi_scale_fill(pal = "GrPink", dim = 3) +
+  #Theme
+  BivTheme
+
+#-> Bivariate ggplot level_3
+Biv_Map_3 <- ggplot() +
+  #Title
+  ggtitle(bquote(bold('Bivariate') ~ 'mean values by region L3')) +
+  #Geometry
+  geom_sf(data = Bivariate_3, mapping = aes(fill = bi_class),
+          color = "#20231fff", size = 0.05,
+          show.legend = FALSE) +
+  #Scale
+  bi_scale_fill(pal = "GrPink", dim = 3) +
+  #Theme
+  BivTheme
+
+#-> Bivariate ggplot level_4
+Biv_Map_4 <- ggplot() +
+  #Title
+  ggtitle(bquote(bold('Bivariate') ~ 'mean values by region L4')) +
+  #Geometry
+  geom_sf(data = Bivariate_4, mapping = aes(fill = bi_class),
+          color = "#20231fff", size = 0.001,
+          show.legend = FALSE) +
+  #Scale
+  bi_scale_fill(pal = "GrPink", dim = 3) +
+  #Theme
+  BivTheme
+
+#-> Change directory and Export
+setwd(QGI_Fo)
+ggsave("BivMap_L1.png",Biv_Map_1, width=60, height=70, limitsize = FALSE, bg = "transparent")
+ggsave("BivMap_L2.png",Biv_Map_2, width=60, height=70, limitsize = FALSE, bg = "transparent")
+ggsave("BivMap_L3.png",Biv_Map_3, width=60, height=70, limitsize = FALSE, bg = "transparent")
+ggsave("BivMap_L4.png",Biv_Map_4, width=60, height=70, limitsize = FALSE, bg = "transparent")
 
 #legend <- bi_legend(pal = "GrPink",
 #                    dim = 3,
@@ -149,7 +280,5 @@ map
 #  draw_plot(map, 0, 0, 1, 1) +
 #  draw_plot(legend, 0, 0, 0.2, 0.2)
 
-setwd(QGI_Fo)
 
-ggsave("Bivariate.png",map, width=60, height=70, limitsize = FALSE, bg = "transparent")
 
