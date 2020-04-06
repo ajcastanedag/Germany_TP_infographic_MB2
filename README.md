@@ -5,7 +5,7 @@ In this repository you will found how to extract temporal temperature and precip
 
 1.**Data Extraction**
 
-In this section and using the script  [1.Data_Extraction](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/1.Data_Extraction.R) the information of surface air temperature and precipitation       from the will be  
+In this section and using the script  [1.Data_Extraction](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/1.Data_Extraction.R) the information of surface air temperature and precipitation from the webpage will be  downloaded and converted into .csv files. The key points in this code are: First, the directory creation due to the hole file and folder system for the rest of the code is created in this step. 
 
 2.**Big Circles Plot**
 

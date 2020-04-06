@@ -24,7 +24,7 @@ library(ggdark)
 ##################################### FOLDER CREATION #######################################################
 #############################################################################################################
 ### Choose Main Folder
-Main_Fo <- "C:\\Users\\Cowboybebop\\Documents\\EAGLE\\I_SEMESTER\\Introdution_to_Progrmming_and_Geostatistics\\Final_Task"#choose.dir()
+Main_Fo <- choose.dir()
 
 setwd(Main_Fo)
 
