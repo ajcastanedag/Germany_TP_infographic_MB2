@@ -34,15 +34,13 @@ In this section, using the script  [2.Circles.R](https://github.com/ajcastanedag
 
 ## **3.Stripes Plot**
 
-This plot is made 
-
-based on [Dr. Dominic Royé](https://dominicroye.github.io/en) [Post](https://dominicroye.github.io/en/2018/how-to-create-warming-stripes-in-r/)
+This plot is made to show the temperature and precipitation mean values variations through the years, its based on [Dr. Dominic Royé](https://dominicroye.github.io/en) [Post](https://dominicroye.github.io/en/2018/how-to-create-warming-stripes-in-r/) and includes in color the value variations, in a black line the actual data and in a curve the trend of the data. 
 
 ![Year_Stripes](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/Graph_Sample/Year_Stripes.png)
 
 ## **4.Bivariate Map**
 
-based on [Biscale](https://github.com/slu-openGIS/biscale)
+Once all data is gathered by its yearly and monthly variations,  the distribution of the variables inside different  administrative areas is made based on [Biscale](https://github.com/slu-openGIS/biscale) maps. Those areas are downloaded from [gadm](https://gadm.org/) and consist in 4 levels being the level 1 the states and in level 4  municipalities. 
 
 ![Bivariate](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/Graph_Sample/Bivariate.png)
 
