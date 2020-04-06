@@ -9,7 +9,7 @@ In this section and using the script  [1.Data_Extraction](https://github.com/ajc
 
 Second, the data download section starting on  line #91 will loop over all month folders from the web page and download all .asc.gz files keeping the same structure. In this step the years is obtained so its important to running it each time to assure the Years variable is correctly created. To avoid downloading data over and over, before each download step the existence of each file is checked so the loop can be run many times and  no duplicates will be downloaded, instead, "grid file already exist..." message will be printed.   
 
-Third,  read ASCII-Grid-File step is executed in other big loop. In this step all .asc.gz files are read  and particular modifications are performed such as appliance of coordinate system (EPSG: 31467) and values modifications like Temp/10 accordingly to Description.pdf files found in each dataset. This part of the code was inspired and based on [This GitHub Repository](https://github.com/wegmann/R_scripts/blob/master/Summer_Weather_Statistics.R) As well, in this step Large RasterStack is created and saved for each month containing all years as layers. 
+Third,  read ASCII-Grid-File step is executed in other big loop. In this step all .asc.gz files are read  and particular modifications are performed such as appliance of coordinate system (EPSG: 31467) and values modifications like Temp/10 accordingly to Description.pdf files found in each dataset. This part of the code was inspired and based on [this](https://github.com/wegmann/R_scripts/blob/master/Summer_Weather_Statistics.R) GitHub repository. As well, in this step Large RasterStack is created and saved for each month containing all years as layers. 
 
 Finally, a data frame is created and for each month in each year the mean temperature in all Germany is calculated, as well the minimum, maximum and mean value in all months is calculated per year. The data frame structure looks like the following table and its exported as a .csv file. Once the values are calculated the whole procedure is repeated for the precipitation dataset. 
 
@@ -27,6 +27,8 @@ Finally, a data frame is created and for each month in each year the mean temper
 | 2019 | 0.63    | 3.95     | 6.58  | 9.62  | 10.99 | 19.78 | 18.90 | 19.06  | …    | 0.63  | 19.78 | 10.28 |
 
 ## **2.Big Circles Plot**
+
+In this section, using the script  [2.Circles.R](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/2.Circles.R) the data extracted before will be plotted. The graph is a   [Bar Chart](https://ggplot2.tidyverse.org/reference/geom_bar.html) wrapped in the y axis by the usage of [Polar coordinates](https://ggplot2.tidyverse.org/reference/coord_polar.html).  It is mainly portraying in different colors the variations  of the temperature. Each concentric ring represent a single year as shown in the legend of the image, being the smallest ring 1881 and the outer ring 2019. Due to the need of a full year cycle to close each ring, the data frame is filtered and all new data will not be shown until December of the year is included. To show the monthly behavior, each month has the mean temperature value though all years as a white line; a black area to track the data variations and a gray curve to show the general trend of each month.  
 
 ![Mill_Graph](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/Graph_Sample/Mill_Graph.png)
 
