@@ -3,7 +3,7 @@ In this repository you will found how to extract temporal temperature and precip
 
 ![InfoGraph](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/Graph_Sample/InfoGraph.png)
 
-**1.Data Extraction**
+## **1.Data Extraction**
 
 In this section and using the script  [1.Data_Extraction](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/1.Data_Extraction.R) the information of surface air temperature and precipitation from the webpage will be  downloaded and converted into .csv files. The key points in this code are: First, the directory selection due to the whole folder system for the rest of the code and graphs is created in this step. In line #27 "Main_Fo <- choose.dir()" can be changed for any empty previously created directory. 
 
@@ -26,15 +26,22 @@ Finally, a data frame is created and for each month in each year the mean temper
 | 2018 | 3.72    | -1.87    | 2.36  | 12.32 | 16.03 | 17.73 | 20.29 | 19.91  | …    | -1.87 | 20.29 | 10.45 |
 | 2019 | 0.63    | 3.95     | 6.58  | 9.62  | 10.99 | 19.78 | 18.90 | 19.06  | …    | 0.63  | 19.78 | 10.28 |
 
-**2.Big Circles Plot**
+## **2.Big Circles Plot**
 
 ![Mill_Graph](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/Graph_Sample/Mill_Graph.png)
 
-**3.Stripes Plot**
+## **3.Stripes Plot**
+
+This plot is made 
+
+based on [Dr. Dominic Royé](https://dominicroye.github.io/en) [Post](https://dominicroye.github.io/en/2018/how-to-create-warming-stripes-in-r/)
 
 ![Year_Stripes](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/Graph_Sample/Year_Stripes.png)
 
-**4.Bivariate Map**
+## **4.Bivariate Map**
+
+based on [Biscale](https://github.com/slu-openGIS/biscale)
+
 ![Bivariate](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/Graph_Sample/Bivariate.png)
 
 
