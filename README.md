@@ -11,7 +11,7 @@ Final task for MB2 class using R to process temperature and precipitation data f
 
 3.**Stripes Plot**
 
-![Year_Stripes](Chttps://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/Graph_Sample/Year_Stripes.png)
+![Year_Stripes](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/Graph_Sample/Year_Stripes.png)
 
 2.**Bivariate Map**
 
