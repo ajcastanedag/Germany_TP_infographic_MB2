@@ -1,5 +1,7 @@
-# **Germany_TP_infographic_MB2**
-Final task for MB2 class using R to process temperature and precipitation data from ftp://opendata.dwd.de/
+# **Germany Temperature and Precipitation Infographic**
+In this repository 
+
+For the final task MB2 class using R to process temperature and precipitation data from ftp://opendata.dwd.de/
 
 
 

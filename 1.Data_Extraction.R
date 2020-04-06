@@ -35,8 +35,8 @@ dir.create("3.Grids", showWarnings = FALSE)
 Grids_Fo <- paste0(Main_Fo,"\\3.Grids")
 dir.create("4.Raster", showWarnings = FALSE)
 Raster_Fo <- paste0(Main_Fo,"\\4.Raster")
-dir.create("5.QGis", showWarnings = FALSE)
-QGI_Fo <- paste0(Main_Fo,"\\5.QGis")
+dir.create("5.Graphs", showWarnings = FALSE)
+Graphs_Fo <- paste0(Main_Fo,"\\5.Graphs")
 
 ### Create SubFolders
 setwd(Data_Fo)
@@ -57,13 +57,13 @@ Temper_Fo_Rst <- paste0(Raster_Fo,"\\1.Temperature")
 dir.create("2.Precipitation", showWarnings = FALSE)
 Precip_Fo_Rst <-  paste0(Raster_Fo,"\\2.Precipitation")
 
-setwd(QGI_Fo)
+setwd(Graphs_Fo)
 dir.create("1.Shapes", showWarnings = FALSE)
 Shapes_Fo <- paste0(QGI_Fo,"\\1.Shapes")
 dir.create("2.Circles", showWarnings = FALSE)
 Circles_Fo <- paste0(QGI_Fo,"\\2.Circles")
-dir.create("3.Strips", showWarnings = FALSE)
-Strip_Fo <- paste0(QGI_Fo,"\\3.Strips")
+dir.create("3.Stripes", showWarnings = FALSE)
+Stripes_Fo <- paste0(QGI_Fo,"\\3.Stripes")
 dir.create("4.InkScape", showWarnings = FALSE)
 
 #############################################################################################################
