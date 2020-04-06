@@ -9,8 +9,7 @@ library(ggplot2)
 ##################################### FOLDER DECLARATION ####################################################
 #############################################################################################################
 ### Choose Main Folder
-Main_Fo <- "C:\\Users\\Cowboybebop\\Documents\\EAGLE\\I_SEMESTER\\Introdution_to_Progrmming_and_Geostatistics\\Final_Task"#choose.dir()
-
+Main_Fo <- choose.dir()
 setwd(Main_Fo)
 
 ### Create Folders
@@ -18,7 +17,7 @@ Script_Fo <- paste0(Main_Fo,"\\1.Script")
 Data_Fo <- paste0(Main_Fo,"\\2.Data")
 Grids_Fo <- paste0(Main_Fo,"\\3.Grids")
 Raster_Fo <- paste0(Main_Fo,"\\4.Raster")
-QGI_Fo <- paste0(Main_Fo,"\\5.QGis")
+Graphs_Fo <- paste0(Main_Fo,"\\5.Graphs")
 
 ### Create SubFolders
 Temper_Fo_Or <- paste0(Data_Fo,"\\1.Temperature")
@@ -30,9 +29,9 @@ Precip_Fo_Grd <-  paste0(Grids_Fo,"\\2.Precipitation")
 Temper_Fo_Rst <- paste0(Raster_Fo,"\\1.Temperature")
 Precip_Fo_Rst <-  paste0(Raster_Fo,"\\2.Precipitation")
 
-Shapes_Fo <- paste0(QGI_Fo,"\\1.Shapes")
-Circles_Fo <- paste0(QGI_Fo,"\\2.Circles")
-Strip_Fo <- paste0(QGI_Fo,"\\3.Strips")
+Shapes_Fo <- paste0(Graphs_Fo,"\\1.Shapes")
+Circles_Fo <- paste0(Graphs_Fo,"\\2.Circles")
+Strip_Fo <- paste0(Graphs_Fo,"\\3.Strips")
 
 #############################################################################################################
 #####################################    VARIABLES    #######################################################
@@ -42,7 +41,6 @@ Month_List <- c("January","February","March","April","May","June","July","August
 
 #-> Standarize List to access online data
 Month_ID <- c("01_Jan/","02_Feb/","03_Mar/","04_Apr/","05_May/","06_Jun/","07_Jul/","08_Aug/","09_Sep/","10_Oct/","11_Nov/","12_Dec/")
-
 #############################################################################################################
 #####################################   Import Data Frame   #################################################
 #############################################################################################################
@@ -56,7 +54,7 @@ Main_T_DF <- read.csv(file = "Temperature.csv",header = TRUE)
 #############################################################################################################
 ####################################   Create Circle Theme  #################################################
 #############################################################################################################
-
+# Define theme for the graphs
 theme_circle <- theme(axis.text.y = element_blank(),
                       axis.text.x = element_blank(),
                       axis.line.y = element_blank(),
@@ -67,13 +65,12 @@ theme_circle <- theme(axis.text.y = element_blank(),
                       legend.title = element_blank(),
                       panel.grid.minor = element_blank(),
                       panel.background = element_blank(),
-                      plot.background = element_blank(),#element_rect(fill = "#20231fff"),
+                      plot.background = element_blank(),
                       legend.box.spacing = unit(0, "mm"),
                       legend.position = "none",
                       plot.title = element_text(size = 180,
                                                 color= "white",
                                                 margin=margin(0,0,30,30)))
-
 #############################################################################################################
 ###############################  Big Circle Temperature Graph  ##############################################
 #############################################################################################################
@@ -84,48 +81,64 @@ setwd(Temper_Fo_Grd)
 GridFilesTemp <- paste0(grep("*.grd*", list.files(path = getwd(), pattern="*.grd$", full.names = TRUE), value=T))
 GridFilesTemp <- str_replace_all(string = GridFilesTemp, pattern = "/", replacement = "//" )
 
+#-> Select values ONLY if there is data for the whole year
+while(length(GridFilesTemp) %% 12 != 0){
+  GridFilesTemp <- GridFilesTemp[-length(GridFilesTemp)]
+}
+
 ### -> Creation of Dataframe to store all values for circle plot
 #-> Create control ID
 ID <- seq(1:length(GridFilesTemp))
 
-#-> Extract Years from readed files "1881_01"
+#-> Extract Years character from readed files "1881_01"
 Start <- nchar(GridFilesTemp[1]) - 14
 Stop <- nchar(GridFilesTemp[1]) - 8
+
+#-> Create a list of Years
 Years <- unique(substr(GridFilesTemp, start = Start, stop = Stop))
 
-#-> Create inverted list of months 
+#-> Create inverted list of months (Inverted because of the way it will be ploted) 
 Month_Lst_Inv <- c("12.Jan","11.Feb","10.Mar","09.Apr","08.May","07.Jun","06.Jul","05.Aug","04.Sep","03.Oct","02.Nov","01.Dec")
 
-#-> Create dataframe to store all data for circle plot
+### -> Create dataframe to store all data for circle plot
 Circle_Temp_DF <- as.data.frame(ID)
+#-> Assign Year list to Year and Month 
 Circle_Temp_DF$Year <- Years 
-Circle_Temp_DF$Month <- Years 
+Circle_Temp_DF$Month <- Years
+#-> Substract values to match year and month
 Circle_Temp_DF$Year <- substr(Circle_Temp_DF$Year,1,4)
 Circle_Temp_DF$Month <- Month_Lst_Inv[as.numeric(substr(Circle_Temp_DF$Month,6,7))]
 
-#-> Extract mean from grid files per month
+#-> Extract Mean value from grid files per month
 for(i in 1:length(Years)){
-  TMP <- stack(GridFilesTemp[i]) 
+  TMP <- raster(GridFilesTemp[i]) 
   Circle_Temp_DF$T_Mean[i] <-  data.frame(TMP.mean=cellStats(TMP, "mean"))
 }
 
 #-> Change class of mean to numeric class
 Circle_Temp_DF$T_Mean <- as.numeric(Circle_Temp_DF$T_Mean)
 
+
+###-> Create color names for all data based on max and min
 #-> Get color names of pallete
 Temperature_Colors <- rev(brewer.pal(n = 9, name = "RdYlBu"))
 
 #-> Assign color names of pallete to function
 pie.colors <- colorRampPalette(Temperature_Colors)
 
+#-> Create a list of unique values of Temperature
 Value_List <- unique(Circle_Temp_DF$T_Mean)
 
+#-> Sort values of Temperature
 Value_List <- sort(Value_List, decreasing = FALSE)
 
+#-> Create a temporal dataframe to store the color name and its value
 Tmp_DF<-data.frame(value=Value_List, color.name=pie.colors(length(Value_List))) 
 
+#-> Create empty column in Circle_Temp_DF to match values and colors
 Circle_Temp_DF$color <- ""
 
+#-> For loop to compare values in Tmp_DF and Circle_Temp_DF and assign them
 for(i in 1:length(Circle_Temp_DF$T_Mean)){
   for(j in 1:length(Tmp_DF$value)){
     if(Circle_Temp_DF$T_Mean[i] == Tmp_DF$value[j]){
@@ -134,44 +147,42 @@ for(i in 1:length(Circle_Temp_DF$T_Mean)){
   }
 }
 
-#########################################################################
-
-Mes <- Month_Lst_Inv
-Mes <- substr(Mes,4,7)
-Mean_Df <- as.data.frame(Mes)
-
+###-> Create Mean_Df to store mean values per month
+Month <- Month_Lst_Inv
+Month <- substr(Month,4,7)
+Mean_Df <- as.data.frame(Month)
+#-> Due to the graph will be wrapped on the Y axis and its originally a bar plot
+# each month value has limits between the month ID, for exaple January is a bar
+# and its limits are between 0 and 1
 Mean_Df$Min_Cir <- seq(0,11)
 Mean_Df$Max_Cir <- seq(1,12)
-#########
-#Aca calcular desde el stack la media por mes, pongo números cualquiera mientras tanto
+
+#-> Calculate the mean value per month from the Main_T_DF
 for(i in 2:13){
-  Mean_Df$Med_Mes[i-1] <- mean(Main_T_DF[1:139,i])
-  Mean_Df$Min_Mes [i-1] <- min(Main_T_DF[1:139,i])
-  Mean_Df$Max_Mes[i-1] <- max(Main_T_DF[1:139,i])
+  Mean_Df$Med_Month[i-1] <- mean(Main_T_DF[1:139,i])
+  Mean_Df$Min_Month [i-1] <- min(Main_T_DF[1:139,i])
+  Mean_Df$Max_Month[i-1] <- max(Main_T_DF[1:139,i])
 }
 
-Mean_Df$Med_Trans <- ((Mean_Df$Med_Mes - Mean_Df$Min_Mes)/(Mean_Df$Max_Mes - Mean_Df$Min_Mes)) + Mean_Df$Min_Cir
+#-> Linear regresion to calculate the mean value per month based on the limits on the barplot
+Mean_Df$Med_Trans <- ((Mean_Df$Med_Month - Mean_Df$Min_Month)/(Mean_Df$Max_Month - Mean_Df$Min_Month)) + Mean_Df$Min_Cir
 
-#########
-Curves <- data.frame(Leng=seq(0.5,138.5))
+###-> Create new data frame to store all values of temperatures and adjust values to plot range
+# leng will be the x for the barplot and starts from 0.5 to fit the middle of the bar
+Curves <- data.frame(Leng = seq(0.5,138.5))
 
+#-> Paste Main_T_DF dataframe by month
 Curves <- cbind(Curves, Main_T_DF[1:139, names(Main_T_DF) %in% Month_List])
 
+#-> Addjust values to each month interval
 for(i in 1:12){
-  Curves[i+1]<- ((Curves[i+1] - Mean_Df$Min_Mes[i])/(Mean_Df$Max_Mes[i] - Mean_Df$Min_Mes[i])) + Mean_Df$Min_Cir[i]
+  Curves[i+1] <- ((Curves[i+1] - Mean_Df$Min_Month[i])/(Mean_Df$Max_Month[i] - Mean_Df$Min_Month[i])) + Mean_Df$Min_Cir[i]
 }
 
-# Change to capital letters all the month list
-Mes <- as.character(lapply(Mes, toupper))
+# Change to capital letters all the month list to be ploted
+Month <- as.character(lapply(Mes, toupper))
 
-#Fechas importates que pueden influenciar la temperatura
-Inicio_Guerra <- 1939-1881
-Fin_Guerra <- 1945 -1881
-Caida_Muro <- 1961 -1881
-# Poner datos de www.globalcarbonproject.org max y min de emision de CO2 
-
-#########################################################################
-
+###-> Create GGPLOT
 Circel_T <- ggplot()+
   ##### Title
   ggtitle(bquote(bold('TEMPERATURE') ~ 'mill graph')) +
@@ -240,12 +251,12 @@ Circel_T <- ggplot()+
   geom_segment(aes(x=140, xend=160,y=seq(0,11), yend=seq(0,11)), colour="white", size = 4)+
   # Labels
   geom_text(mapping=aes(x=155, y=seq(0.4,11.4), label=Mes), color= "white", fontface = "bold", size = 40, angle=seq(-13,-343,length.out=12), vjust=-0.4, hjust=0) +
-  ##### Flip Coordinates       
-  coord_polar("y")
+  ##### Wrap Y Coordinate       
+  coord_polar("Y")
 
 ##### Export PNG file
 setwd(Circles_Fo)
-ggsave("T_Circle.png",Circel_T,width=70, height=70, limitsize = FALSE, bg = "transparent")
+ggsave("T_Circlex.png",Circel_T,width=70, height=70, limitsize = FALSE, bg = "transparent")
 
 #############################################################################################################
 ###############################  Big Circle Precipitation Graph  ############################################
@@ -256,6 +267,11 @@ setwd(Precip_Fo_Grd)
 #-> Read *.gri path name and reblace / with // 
 GridFilesTemp <- paste0(grep("*.grd*", list.files(path = getwd(), pattern="*.grd$", full.names = TRUE), value=T))
 GridFilesTemp <- str_replace_all(string = GridFilesTemp, pattern = "/", replacement = "//" )
+
+#-> Select values ONLY if there is data for the whole year
+while(length(GridFilesTemp) %% 12 != 0){
+  GridFilesTemp <- GridFilesTemp[-length(GridFilesTemp)]
+}
 
 ### -> Creation of Dataframe to store all values for circle plot
 #-> Create control ID
@@ -412,3 +428,15 @@ Circel_P <- ggplot()+
 setwd(Circles_Fo)
 
 ggsave("P_Circle.png",Circel_P,width=70, height=70, limitsize = FALSE, bg = "transparent")
+
+
+
+
+
+
+
+#Fechas importates que pueden influenciar la temperatura
+Inicio_Guerra <- 1939-1881
+Fin_Guerra <- 1945 -1881
+Caida_Muro <- 1961 -1881
+# Poner datos de www.globalcarbonproject.org max y min de emision de CO2 

@@ -9,18 +9,20 @@ In this section and using the script  [1.Data_Extraction](https://github.com/ajc
 
 Second, the data download section starting on  line #91 will loop over all month folders from the web page and download all .asc.gz files keeping the same structure. In this step the years is obtained so its important to running it each time to assure the Years variable is correctly created. To avoid downloading data over and over, before each download step the existence of each file is checked so the loop can be run many times and  no duplicates will be downloaded, instead, "grid file already exist..." message will be printed.   
 
-Third,  read ASCII-Grid-File step is executed in other big loop. In this step all .asc.gz files are read  and particular modifications are performed such as appliance of coordinate system (EPSG: 31467) and values modifications like Temp/10 accordingly to Description.pdf files found in each dataset. As well, in this step Large RasterStack is created and saved for each month containing all years as layers. 
+Third,  read ASCII-Grid-File step is executed in other big loop. In this step all .asc.gz files are read  and particular modifications are performed such as appliance of coordinate system (EPSG: 31467) and values modifications like Temp/10 accordingly to Description.pdf files found in each dataset. This part of the code was inspired and based on [This GitHub Repository](https://github.com/wegmann/R_scripts/blob/master/Summer_Weather_Statistics.R) As well, in this step Large RasterStack is created and saved for each month containing all years as layers. 
 
 Finally, a data frame is created and for each month in each year the mean temperature in all Germany is calculated, as well the minimum, maximum and mean value in all months is calculated per year. The data frame structure looks like the following table and its exported as a .csv file. Once the values are calculated the whole procedure is repeated for the precipitation dataset. 
 
-| Year | Jan  | Feb  | ...  | Min  | Mean  | Max   |
-| :--: | :--: | :--: | :--: | :--: | :---: | ----- |
-| 1881 | -5.4 | 0.1  | ...  | -5.4 | 18.65 | 7.35  |
-| 1882 | 0.4  | 1.7  | ...  | 0.43 | 16.78 | 8.39  |
-| ...  | ...  | ...  | ...  | ...  |  ...  | ...   |
-| 2019 | 0.6  | 3.9  | .... | 0.63 | 19.77 | 10.27 |
-
-
+| Year | January | February | March | April | May   | June  | July  | August | September | October | November | December | Min   | Max   | Mean  |
+| ---- | ------- | -------- | ----- | ----- | ----- | ----- | ----- | ------ | --------- | ------- | -------- | -------- | ----- | ----- | ----- |
+| 1881 | -5.41   | 0.06     | 2.80  | 5.55  | 11.86 | 15.11 | 18.66 | 15.89  | 12.07     | 4.96    | 5.73     | 0.93     | -5.41 | 18.66 | 7.35  |
+| 1882 | 0.43    | 1.71     | 6.16  | 7.73  | 12.01 | 14.36 | 16.78 | 14.89  | 13.14     | 8.93    | 3.94     | 0.62     | 0.43  | 16.78 | 8.39  |
+| 1883 | -0.29   | 2.48     | -1.46 | 6.09  | 12.42 | 16.28 | 16.67 | 15.92  | 13.38     | 8.57    | 4.36     | 0.86     | -1.46 | 16.67 | 7.94  |
+| 1884 | 2.92    | 2.85     | 4.87  | 6.08  | 12.71 | 13.12 | 18.24 | 17.02  | 14.28     | 7.91    | 1.75     | 1.72     | 1.72  | 18.24 | 8.62  |
+| …    | …       | …        | …     | …     | …     | …     | …     | …      | …         | …       | …        | …        | …     | …     | …     |
+| 2017 | -2.15   | 2.90     | 7.20  | 7.42  | 14.13 | 17.76 | 18.06 | 17.87  | 12.79     | 11.14   | 5.11     | 2.71     | -2.15 | 18.06 | 9.58  |
+| 2018 | 3.72    | -1.87    | 2.36  | 12.32 | 16.03 | 17.73 | 20.29 | 19.91  | 15.09     | 10.72   | 5.21     | 3.90     | -1.87 | 20.29 | 10.45 |
+| 2019 | 0.63    | 3.95     | 6.58  | 9.62  | 10.99 | 19.78 | 18.90 | 19.06  | 14.05     | 10.81   | 5.22     | 3.75     | 0.63  | 19.78 | 10.28 |
 
 2.**Big Circles Plot**
 
