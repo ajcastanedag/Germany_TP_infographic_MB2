@@ -11,9 +11,7 @@ Second, the data download section starting on  line #91 will loop over all month
 
 Third,  read ASCII-Grid-File step is executed in other big loop. In this step all .asc.gz files are read  and particular modifications are performed such as appliance of coordinate system (EPSG: 31467) and values modifications like Temp/10 accordingly to Description.pdf files found in each dataset. As well, in this step Large RasterStack is created and saved for each month containing all years as layers. 
 
-Finally, a data frame is created 
-
-The dataframe structture looks like the following table and its exported as a .csv file.
+Finally, a data frame is created and for each month in each year the mean temperature in all Germany is calculated, as well the minimum, maximum and mean value in all months is calculated per year. The data frame structure looks like the following table and its exported as a .csv file. Once the values are calculated the whole procedure is repeated for the precipitation dataset. 
 
 | Year | Jan  | Feb  | ...  | Min  | Mean  | Max   |
 | :--: | :--: | :--: | :--: | :--: | :---: | ----- |
@@ -25,6 +23,8 @@ The dataframe structture looks like the following table and its exported as a .c
 
 
 2.**Big Circles Plot**
+
+
 
 ![Mill_Graph](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/Graph_Sample/Mill_Graph.png)
 
