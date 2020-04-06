@@ -1,5 +1,5 @@
 # **Germany Temperature and Precipitation Infographic**
-In this repository you will found how to extract temporal temperature and precipitation data using R from monthly datasets like ftp://opendata.dwd.de/. The process from the data download to the plot of the information is described step by step in the sections below. The final result consist in the summary of all graphs generated from the data as an Infographics. Inside [Opendata](ftp://opendata.dwd.de/climate_environment/CDC/grids_germany/) more monthly datasets can be used with this code like [drought_index](ftp://opendata.dwd.de/climate_environment/CDC/grids_germany/monthly/drought_index/) and [sunshine_duration](ftp://opendata.dwd.de/climate_environment/CDC/grids_germany/monthly/sunshine_duration/).
+In this repository you will found how to extract temporal temperature and precipitation data using R from monthly datasets like ftp://opendata.dwd.de/. The process from the data download to the plot of the information is described step by step in the sections below. The final result consist in the summary of all graphs generated from the data as an Infographics. Inside [Opendata](ftp://opendata.dwd.de/climate_environment/CDC/grids_germany/) more monthly datasets can be used with this code like [drought_index](ftp://opendata.dwd.de/climate_environment/CDC/grids_germany/monthly/drought_index/) and [sunshine_duration](ftp://opendata.dwd.de/climate_environment/CDC/grids_germany/monthly/sunshine_duration/). Once the data extraction is performed all graphs can be produced independently due to they extract the values either from the .csv generated or the grid files.  
 
 ![InfoGraph](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/Graph_Sample/InfoGraph.png)
 
@@ -34,13 +34,13 @@ In this section, using the script  [2.Circles.R](https://github.com/ajcastanedag
 
 ## **3.Stripes Plot**
 
-This plot is made to show the temperature and precipitation mean values variations through the years, its based on [Dr. Dominic Royé](https://dominicroye.github.io/en) [Post](https://dominicroye.github.io/en/2018/how-to-create-warming-stripes-in-r/) and includes in color the value variations, in a black line the actual data and in a curve the trend of the data. 
+This plot is achieved though [3.Stripes.R](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/3.Stripes.R) script and was made to plot the temperature and precipitation mean values variations through the years. Its based on [Dr. Dominic Royé](https://dominicroye.github.io/en) [Post](https://dominicroye.github.io/en/2018/how-to-create-warming-stripes-in-r/) and includes in color the value variations, in a black line the actual data scaled to the height of the stripes and in a curve the trend of the data. 
 
 ![Year_Stripes](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/Graph_Sample/Year_Stripes.png)
 
 ## **4.Bivariate Map**
 
-Once all data is gathered by its yearly and monthly variations,  the distribution of the variables inside different  administrative areas is made based on [Biscale](https://github.com/slu-openGIS/biscale) maps. Those areas are downloaded from [gadm](https://gadm.org/) and consist in 4 levels being the level 1 the states and in level 4  municipalities. 
+Once all data is gathered by its yearly and monthly variations,  the distribution of the variables inside different  administrative areas is made based on a [Biscale](https://github.com/slu-openGIS/biscale) maps using the [4.Bivariate.R](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/4.Bivariate.R) script. The administrative areas are downloaded from [gadm](https://gadm.org/) and consist in 4 levels being the level 1 the states and in level 4  municipalities. 
 
 ![Bivariate](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/Graph_Sample/Bivariate.png)
 
