@@ -40,7 +40,7 @@ This plot is achieved though [3.Stripes.R](https://github.com/ajcastanedag/Germa
 
 ## **4.Bivariate Map**
 
-Once all data is gathered by its yearly and monthly variations,  the distribution of the variables inside different  administrative areas is made based on a [Biscale](https://github.com/slu-openGIS/biscale) maps using the [4.Bivariate.R](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/4.Bivariate.R) script. The administrative areas are downloaded from [gadm](https://gadm.org/) and consist in 4 levels being the level 1 the states and in level 4  municipalities. 
+Once all data is gathered by its yearly and monthly variations,  the distribution of the variables inside different  administrative areas is made based on a [Biscale](https://github.com/slu-openGIS/biscale) maps using the [4.Bivariate.R](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/4.Bivariate.R) script. The administrative areas are downloaded from [gadm](https://gadm.org/) and consist in 4 levels being the level 1 the states and in level 4  municipalities in Germany. 
 
 ![Bivariate](https://github.com/ajcastanedag/Germany_TP_infographic_MB2/blob/master/Graph_Sample/Bivariate.png)
 
