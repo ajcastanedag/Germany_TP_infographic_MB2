@@ -82,9 +82,9 @@ T_Stripes_Mod <- ggplot(Main_T_DF, aes(x = Main_T_DF$Year, y = 1, fill = Main_T_
   scale_y_continuous(expand = c(0, 0))+
   scale_fill_gradientn(colors = col_strip)+
   guides(fill = guide_colorbar(barwidth = 1))+
-  labs(title = paste("Yearly mean temperature stipes T in °C",Main_T_DF$Year[1],"-", Main_T_DF$Year[length(Main_T_DF$Year)]),
+  labs(title = paste("Yearly mean temperature stipes",Main_T_DF$Year[1],"-", Main_T_DF$Year[length(Main_T_DF$Year)]),
        caption = "Data: ftp://opendata.dwd.de/",
-       fill = "T" ) +
+       fill = "T in °C" ) +
   theme_strip +
   geom_line(aes(x=Main_T_DF$Year,y=Main_T_DF$MeanMod)) +
   geom_smooth(aes(x=Main_T_DF$Year,y=Main_T_DF$MeanMod), color = "black", method = "loess")
@@ -118,9 +118,9 @@ P_Stripes_Mod <- ggplot(Main_P_DF, aes(x = Main_P_DF$Year, y = 1, fill = Main_P_
   scale_y_continuous(expand = c(0, 0))+
   scale_fill_gradientn(colors = col_strip)+
   guides(fill = guide_colorbar(barwidth = 1))+
-  labs(title = paste("Mean Germany Precipitation P in mm",Main_P_DF$Year[1],"-", Main_P_DF$Year[length(Main_P_DF$Year)]),
+  labs(title = paste("Yearly mean precipitation stripes",Main_P_DF$Year[1],"-", Main_P_DF$Year[length(Main_P_DF$Year)]),
        caption = "Data: ftp://opendata.dwd.de/",
-       fill = "P") +
+       fill = "P in mm") +
   theme_strip +
   geom_line(aes(x=Main_P_DF$Year,y=Main_P_DF$MeanMod)) +
   geom_smooth(aes(x=Main_P_DF$Year,y=Main_P_DF$MeanMod),color = "black", method = "loess")
