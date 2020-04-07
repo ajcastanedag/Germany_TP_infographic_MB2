@@ -12,7 +12,7 @@ library(ggplot2)
 Main_Fo <- choose.dir()
 setwd(Main_Fo)
 
-### Create Folders
+### Declare Folders
 Script_Fo <- paste0(Main_Fo,"\\1.Script")
 Data_Fo <- paste0(Main_Fo,"\\2.Data")
 Grids_Fo <- paste0(Main_Fo,"\\3.Grids")
@@ -280,15 +280,19 @@ ID <- seq(1:length(GridFilesTemp))
 #-> Extract Years from readed files "1881_01"
 Start <- nchar(GridFilesTemp[1]) - 14
 Stop <- nchar(GridFilesTemp[1]) - 8
+
+#-> Create a list of Years
 Years <- unique(substr(GridFilesTemp, start = Start, stop = Stop))
 
 #-> Create inverted list of months 
 Month_Lst_Inv <- c("12.Jan","11.Feb","10.Mar","09.Apr","08.May","07.Jun","06.Jul","05.Aug","04.Sep","03.Oct","02.Nov","01.Dec")
 
-#-> Create dataframe to store all data for circle plot
+### -> Create dataframe to store all data for circle plot
 Circle_Preci_DF <- as.data.frame(ID)
+#-> Assign Year list to Year and Month 
 Circle_Preci_DF$Year <- Years 
 Circle_Preci_DF$Month <- Years 
+#-> Substract values to match year and month
 Circle_Preci_DF$Year <- substr(Circle_Preci_DF$Year,1,4)
 Circle_Preci_DF$Month <- Month_Lst_Inv[as.numeric(substr(Circle_Preci_DF$Month,6,7))]
 
@@ -307,14 +311,19 @@ Precipitation_Colors <- brewer.pal(n = 9, name = "BrBG") #c("#8C510A","#FBFCBF",
 #-> Assign color names of pallete to function
 pie.colors <- colorRampPalette(Precipitation_Colors)
 
+#-> Create a list of unique values of Temperature
 Value_List <- unique(Circle_Preci_DF$P_Mean)
 
+#-> Sort values of Temperature
 Value_List <- sort(Value_List, decreasing = FALSE)
 
+#-> Create a temporal dataframe to store the color name and its value
 Tmp_DF<-data.frame(value=Value_List, color.name=pie.colors(length(Value_List))) 
 
+#-> Create empty column in Circle_Preci_DF to match values and colors
 Circle_Preci_DF$color <- ""
 
+#-> For loop to compare values in Tmp_DF and Circle_Preci_DF and assign them
 for(i in 1:length(Circle_Preci_DF$P_Mean)){
   for(j in 1:length(Tmp_DF$value)){
     if(Circle_Preci_DF$P_Mean[i] == Tmp_DF$value[j]){
@@ -323,37 +332,43 @@ for(i in 1:length(Circle_Preci_DF$P_Mean)){
   }
 }
 
-#########################################################################
+###-> Create Mean_Df to store mean values per month
+Month <- Month_Lst_Inv
+Month <- substr(Month,4,7)
+Mean_Df <- as.data.frame(Month)
 
-Mes <- Month_Lst_Inv
-Mes <- substr(Mes,4,7)
-Mean_Df <- as.data.frame(Mes)
-
+#-> Due to the graph will be wrapped on the Y axis and its originally a bar plot
+# each month value has limits between the month ID, for exaple January is a bar
+# and its limits are between 0 and 1
 Mean_Df$Min_Cir <- seq(0,11)
 Mean_Df$Max_Cir <- seq(1,12)
-#########
-#Aca calcular desde el stack la media por mes, pongo números cualquiera mientras tanto
+
+#-> Calculate the mean value per month from the Main_T_DF
 for(i in 2:13){
-  Mean_Df$Med_Mes[i-1] <- mean(Main_P_DF[1:139,i])
-  Mean_Df$Min_Mes [i-1] <- min(Main_P_DF[1:139,i])
-  Mean_Df$Max_Mes[i-1] <- max(Main_P_DF[1:139,i])
+  Mean_Df$Med_Month[i-1] <- mean(Main_P_DF[1:139,i])
+  Mean_Df$Min_Month [i-1] <- min(Main_P_DF[1:139,i])
+  Mean_Df$Max_Month[i-1] <- max(Main_P_DF[1:139,i])
 }
 
-Mean_Df$Med_Trans <- ((Mean_Df$Med_Mes - Mean_Df$Min_Mes)/(Mean_Df$Max_Mes - Mean_Df$Min_Mes)) + Mean_Df$Min_Cir
+#-> Linear regresion to calculate the mean value per month based on the limits on the barplot
+Mean_Df$Med_Trans <- ((Mean_Df$Med_Month - Mean_Df$Min_Month)/(Mean_Df$Max_Month - Mean_Df$Min_Month)) + Mean_Df$Min_Cir
 
-#########
-Curves <- data.frame(Leng=seq(0.5,138.5))
+###-> Create new data frame to store all values of temperatures and adjust values to plot range
+# leng will be the x for the barplot and starts from 0.5 to fit the middle of the bar
+Curves <- data.frame(Leng = seq(0.5,138.5))
 
+#-> Paste Main_T_DF dataframe by month
 Curves <- cbind(Curves, Main_P_DF[1:139, names(Main_P_DF) %in% Month_List])
 
+#-> Addjust values to each month interval
 for(i in 1:12){
-  Curves[i+1]<- ((Curves[i+1] - Mean_Df$Min_Mes[i])/(Mean_Df$Max_Mes[i] - Mean_Df$Min_Mes[i])) + Mean_Df$Min_Cir[i]
+  Curves[i+1]<- ((Curves[i+1] - Mean_Df$Min_Month[i])/(Mean_Df$Max_Month[i] - Mean_Df$Min_Month[i])) + Mean_Df$Min_Cir[i]
 }
 
-# Change to capital letters all the month list
-Mes <- as.character(lapply(Mes, toupper))
+# Change to capital letters all the month list to be ploted
+Month <- as.character(lapply(Month, toupper))
 
-#########################################################################
+###-> Create GGPLOT
 Circel_P <- ggplot()+
   ##### Title
   ggtitle(bquote(bold('PRECIPITATION') ~ 'mill graph')) +
@@ -421,22 +436,17 @@ Circel_P <- ggplot()+
   # Tick marks
   geom_segment(aes(x=140, xend=160,y=seq(0,11), yend=seq(0,11)), colour="white", size = 4)+
   # Labels
-  geom_text(mapping=aes(x=155, y=seq(0.4,11.4), label=Mes), color= "white", fontface = "bold", size = 40, angle=seq(-13,-343,length.out=12), vjust=-0.4, hjust=0) +
+  geom_text(mapping=aes(x=155, y=seq(0.4,11.4), label=Month), color= "white", fontface = "bold", size = 40, angle=seq(-13,-343,length.out=12), vjust=-0.4, hjust=0) +
   ##### Flip Coordinates       
   coord_polar("y")
 
+##### Export PNG file
 setwd(Circles_Fo)
-
-ggsave("P_Circle.png",Circel_P,width=70, height=70, limitsize = FALSE, bg = "transparent")
-
-
-
-
-
+ggsave("P_Circle2.png",Circel_P,width=70, height=70, limitsize = FALSE, bg = "transparent")
 
 
 #Fechas importates que pueden influenciar la temperatura
-Inicio_Guerra <- 1939-1881
-Fin_Guerra <- 1945 -1881
-Caida_Muro <- 1961 -1881
+#Inicio_Guerra <- 1939-1881
+#Fin_Guerra <- 1945 -1881
+#Caida_Muro <- 1961 -1881
 # Poner datos de www.globalcarbonproject.org max y min de emision de CO2 

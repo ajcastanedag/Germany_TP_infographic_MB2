@@ -13,11 +13,10 @@ library(cowplot)
 ##################################### FOLDER DECLARATION ####################################################
 #############################################################################################################
 ### Choose Main Folder
-Main_Fo <- "C:\\Users\\Cowboybebop\\Documents\\EAGLE\\I_SEMESTER\\Introdution_to_Progrmming_and_Geostatistics\\Final_Task"#choose.dir()
-
+Main_Fo <- choose.dir()
 setwd(Main_Fo)
 
-### Create Folders
+### Declare Folders
 Script_Fo <- paste0(Main_Fo,"\\1.Script")
 Data_Fo <- paste0(Main_Fo,"\\2.Data")
 Grids_Fo <- paste0(Main_Fo,"\\3.Grids")
