@@ -63,7 +63,10 @@ dir.create("2.Circles", showWarnings = FALSE)
 Circles_Fo <- paste0(Graphs_Fo,"\\2.Circles")
 dir.create("3.Stripes", showWarnings = FALSE)
 Stripes_Fo <- paste0(Graphs_Fo,"\\3.Stripes")
-dir.create("4.InkScape", showWarnings = FALSE)
+dir.create("4.Bivariate", showWarnings = FALSE)
+Bivariate_Fo <- paste0(Graphs_Fo,"\\4.Bivariate")
+dir.create("5.InkScape", showWarnings = FALSE)
+InkSkape_Fo <- paste0(Graphs_Fo,"\\5.InkScape")
 
 #############################################################################################################
 #####################################    VARIABLES    #######################################################
@@ -533,4 +536,3 @@ for(i in 1:length(Years)){
 #-> Export DataFrame
 setwd(Precip_Fo_Or)
 write.csv(Main_P_DF, "Precipitation.csv", row.names = FALSE)
-

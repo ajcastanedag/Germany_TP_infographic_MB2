@@ -34,9 +34,9 @@ Script_Fo <- paste0(Main_Fo,"\\1.Script")
 Data_Fo <- paste0(Main_Fo,"\\2.Data")
 Grids_Fo <- paste0(Main_Fo,"\\3.Grids")
 Raster_Fo <- paste0(Main_Fo,"\\4.Raster")
-QGI_Fo <- paste0(Main_Fo,"\\5.QGis")
+Graphs_Fo <- paste0(Main_Fo,"\\5.Graphs")
 
-### Create SubFolders
+### SubFolders
 Temper_Fo_Or <- paste0(Data_Fo,"\\1.Temperature")
 Precip_Fo_Or <-  paste0(Data_Fo,"\\2.Precipitation")
 
@@ -46,17 +46,19 @@ Precip_Fo_Grd <-  paste0(Grids_Fo,"\\2.Precipitation")
 Temper_Fo_Rst <- paste0(Raster_Fo,"\\1.Temperature")
 Precip_Fo_Rst <-  paste0(Raster_Fo,"\\2.Precipitation")
 
-Shapes_Fo <- paste0(QGI_Fo,"\\1.Shapes")
-Circles_Fo <- paste0(QGI_Fo,"\\2.Circles")
-Strip_Fo <- paste0(QGI_Fo,"\\3.Strips")
+Bivariate_Fo <- paste0(Graphs_Fo,"\\4.Bivariate")
 
 #############################################################################################################
 ######################################  Temperature Data ####################################################
 #############################################################################################################
-
 #-> Read *.gri path name and reblace / with // 
 GridFilesTemp <- paste0(grep("*.grd*", list.files(path = Temper_Fo_Grd, pattern="*.grd$", full.names = TRUE), value=T))
 GridFilesTemp <- str_replace_all(string = GridFilesTemp, pattern = "/", replacement = "//" )
+
+#-> Select values ONLY if there is data for the whole year
+while(length(GridFilesTemp) %% 12 != 0){
+  GridFilesTemp <- GridFilesTemp[-length(GridFilesTemp)]
+}
 
 #-> Create Stack of all grid files
 Rst_Tem_Stk <- lapply(GridFilesTemp,raster) 
@@ -66,10 +68,14 @@ Rst_Tem_Mean <- stackApply(Rst_Tem_Stk, indices =  rep(1,nlayers(Rst_Tem_Stk)), 
 #############################################################################################################
 ##################################### Precipitation Data ####################################################
 #############################################################################################################
-
 #-> Read *.gri path name and reblace / with // 
 GridFilesPreci <- paste0(grep("*.grd*", list.files(path = Precip_Fo_Grd, pattern="*.grd$", full.names = TRUE), value=T))
 GridFilesPreci <- str_replace_all(string = GridFilesPreci, pattern = "/", replacement = "//" )
+
+#-> Select values ONLY if there is data for the whole year
+while(length(GridFilesPreci) %% 12 != 0){
+  GridFilesPreci <- GridFilesPreci[-length(GridFilesPreci)]
+}
 
 Rst_Pre_Stk <- lapply(GridFilesPreci,raster) 
 Rst_Pre_Stk <- stack(Rst_Pre_Stk)
@@ -78,55 +84,46 @@ Rst_Pre_Mean <- stackApply(Rst_Pre_Stk, indices =  rep(1,nlayers(Rst_Pre_Stk)), 
 #############################################################################################################
 ##################################### Germany Boundaries ####################################################
 #############################################################################################################
-#-> Create Temperature and precipitation Stack
-#Stack <- stack(Rst_Tem_Mean,Rst_Pre_Mean)
+#-> Get Shape of germany and assign coordinate system, delete all values different from Name_* and
+#   create the zonal statistics for temperature and precipitation 
+for(i in 1:4){
+  #-> Create the name for the shape to Download
+  Name <- paste0("Germany_", i)
+  #-> Create the name for the temperature stat zone
+  Name_Tmp <- paste0("Zon_Mean_Temp_", i)
+  #-> Create the name for the temperature stat zone
+  Name_Prec <- paste0("Zon_Mean_Preci_", i)
+  #-> Download data
+  Data <- getData("GADM", country="DEU", level=i, path=Shapes_Fo)
+  #-> Assign coordinate system
+  Data <- spTransform(Data, CRS=CRS("+init=epsg:31467"))
+  #-> Delet all columns different from Name_i
+  Data <-  Data[,(c(match(paste0("NAME_",i),names(Data))))]
+  #-> Create ID field for values
+  Data$ID <- seq(1,length(Data[1]))
+  #-> Extract the Mean Temperature by regions
+  Zon_Mean_Temp <- extract(Rst_Tem_Mean, Data, fun=mean, na.rm=TRUE, df=TRUE)
+  print(paste0("Zon_Mean_Temp created for level ",i))
+  #-> Extract the Mean Precipitation by regions
+  Zon_Mean_Preci <- extract(Rst_Pre_Mean, Data, fun=mean, na.rm=TRUE, df=TRUE)
+  print(paste0("Zon_Mean_Preci created for level ",i))
+  #-> Add Temp_Mean field
+  Data$Temp_Mean <- 0
+  #-> Add Preci_Mean field
+  Data$Preci_Mean <- 0
+  #-> Assign Data to name
+  assign(Name, Data)
+  #-> Assign temperature stat zone to Name_Tmp
+  assign(Name_Tmp, Zon_Mean_Temp)
+  #-> Assign temperature stat zone to Name_Prec
+  assign(Name_Prec, Zon_Mean_Preci)
+  #-> Remove data from workspace
+  rm(Data, Zon_Mean_Temp, Zon_Mean_Preci)
+}
 
-#-> Get Shape of germany
-Germany_1 <- getData("GADM", country="DEU", level=1, path=Shapes_Fo)
-Germany_2 <- getData("GADM", country="DEU", level=2, path=Shapes_Fo)
-Germany_3 <- getData("GADM", country="DEU", level=3, path=Shapes_Fo)
-Germany_4 <- getData("GADM", country="DEU", level=4, path=Shapes_Fo)
-
-#-> Add coordinate system
-Germany_1 <- spTransform(Germany_1,CRS=CRS("+init=epsg:31467"))
-Germany_2 <- spTransform(Germany_2,CRS=CRS("+init=epsg:31467"))
-Germany_3 <- spTransform(Germany_3,CRS=CRS("+init=epsg:31467"))
-Germany_4 <- spTransform(Germany_4,CRS=CRS("+init=epsg:31467"))
-
-#-> Only Name_*
-Germany_1 <- Germany_1[,(c(4))]
-Germany_2 <- Germany_2[,(c(7))]
-Germany_3 <- Germany_3[,(c(10))]
-Germany_4 <- Germany_4[,(c(10))]
-
-#-> Create ID
-Germany_1$ID <- seq(1,length(Germany_1$NAME_1))
-Germany_2$ID <- seq(1,length(Germany_2$NAME_2))
-Germany_3$ID <- seq(1,length(Germany_3$NAME_3))
-Germany_4$ID <- seq(1,length(Germany_4$NAME_4))
-
-#-> Extract the Mean Temperature by regions
-Zon_Mean_Temp_1 <- extract(Rst_Tem_Mean, Germany_1, fun=mean, na.rm=TRUE, df=TRUE)
-Zon_Mean_Temp_2 <- extract(Rst_Tem_Mean, Germany_2, fun=mean, na.rm=TRUE, df=TRUE)
-Zon_Mean_Temp_3 <- extract(Rst_Tem_Mean, Germany_3, fun=mean, na.rm=TRUE, df=TRUE)
-Zon_Mean_Temp_4 <- extract(Rst_Tem_Mean, Germany_4, fun=mean, na.rm=TRUE, df=TRUE)
-
-#-> Extract the Mean Precipitation by regions
-Zon_Mean_Preci_1 <- extract(Rst_Pre_Mean, Germany_1, fun=mean, na.rm=TRUE, df=TRUE)
-Zon_Mean_Preci_2 <- extract(Rst_Pre_Mean, Germany_2, fun=mean, na.rm=TRUE, df=TRUE)
-Zon_Mean_Preci_3 <- extract(Rst_Pre_Mean, Germany_3, fun=mean, na.rm=TRUE, df=TRUE)
-Zon_Mean_Preci_4 <- extract(Rst_Pre_Mean, Germany_4, fun=mean, na.rm=TRUE, df=TRUE)
-
-#-> Create fields in SP object
-Germany_1$Temp_Mean <- 0
-Germany_1$Preci_Mean <- 0
-Germany_2$Temp_Mean <- 0
-Germany_2$Preci_Mean <- 0
-Germany_3$Temp_Mean <- 0
-Germany_3$Preci_Mean <- 0
-Germany_4$Temp_Mean <- 0
-Germany_4$Preci_Mean <- 0
-
+#############################################################################################################
+########################################### Match Values ####################################################
+#############################################################################################################
 #-> Assign values from statistical Zone 1
 for(i in 1:length(Germany_1$ID)){
   for(j in 1: length(Germany_1$Temp_Mean)){
@@ -167,6 +164,7 @@ for(i in 1:length(Germany_3$ID)){
       Germany_3$Preci_Mean[i] <- Zon_Mean_Preci_3$index_1[k]
     }
   }
+  print(paste0("Progress: ",(i*100/4680)))
 }
 
 #-> Assign values from statistical Zone 4
@@ -191,7 +189,7 @@ Germany_3 <- st_as_sf(Germany_3)
 Germany_4 <- st_as_sf(Germany_4)
 
 #############################################################################################################
-########################################## Bivariate Map ####################################################
+######################################### Bivariate Data ####################################################
 #############################################################################################################
 #-> Create Bivariate values
 Bivariate_1 <- bi_class(Germany_1, x = Temp_Mean, y = Preci_Mean, style = "quantile", dim = 3)
@@ -206,15 +204,21 @@ st_write(Bivariate_2, dsn="Bivariate_2.gpkg", layer='Bivariate')
 st_write(Bivariate_3, dsn="Bivariate_3.gpkg", layer='Bivariate')
 st_write(Bivariate_4, dsn="Bivariate_4.gpkg", layer='Bivariate')
 
+#-> Delete "NA-NA" values
+Bivariate_3 <- Bivariate_3[!grepl("NA-NA", Bivariate_3$bi_class),]
+Bivariate_4 <- Bivariate_4[!grepl("NA-NA", Bivariate_4$bi_class),]
+
 #-> Check classes
 unique(Bivariate_1$bi_class)
 unique(Bivariate_2$bi_class)
 unique(Bivariate_3$bi_class)
 unique(Bivariate_4$bi_class)
 
-#-> Delete "NA-NA" values
-Bivariate_3 <- Bivariate_3[!grepl("NA-NA", Bivariate_3$bi_class),]
-Bivariate_4 <- Bivariate_4[!grepl("NA-NA", Bivariate_4$bi_class),]
+#############################################################################################################
+########################################## Bivariate Map ####################################################
+#############################################################################################################
+#-> Change directory and Export
+setwd(Bivariate_Fo)
 
 #-> Bivariate map theme
 BivTheme <- theme(panel.background = element_blank(),
@@ -223,74 +227,36 @@ BivTheme <- theme(panel.background = element_blank(),
                plot.title = element_text(size = 130, color= "white"),
                axis.text = element_text(size = 50, color= "white")) 
 
-#-> Bivariate ggplot level_1
-Biv_Map_1 <- ggplot() +
-  #Title
-  ggtitle(bquote(bold('Bivariate') ~ 'mean values by region L1')) +
-  #Geometry
-  geom_sf(data = Bivariate_1, mapping = aes(fill = bi_class),
-          color = "#20231fff", size = 5,
-          show.legend = FALSE) +
-  #Scale
-  bi_scale_fill(pal = "GrPink", dim = 3) +
-  #Theme
-  BivTheme
+#-> List for produce graphs in loop
+Biv_Lis <- list(Bivariate_1, Bivariate_2, Bivariate_3, Bivariate_4)
 
-#-> Bivariate ggplot level_2
-Biv_Map_2 <- ggplot() +
-  #Title
-  ggtitle(bquote(bold('Bivariate') ~ 'mean values by region L2')) +
-  #Geometry
-  geom_sf(data = Bivariate_2, mapping = aes(fill = bi_class),
-          color = "#20231fff", size = 1,
-          show.legend = FALSE) +
-  #Scale
-  bi_scale_fill(pal = "GrPink", dim = 3) +
-  #Theme
-  BivTheme
-
-#-> Bivariate ggplot level_3
-Biv_Map_3 <- ggplot() +
-  #Title
-  ggtitle(bquote(bold('Bivariate') ~ 'mean values by region L3')) +
-  #Geometry
-  geom_sf(data = Bivariate_3, mapping = aes(fill = bi_class),
-          color = "#20231fff", size = 0.05,
-          show.legend = FALSE) +
-  #Scale
-  bi_scale_fill(pal = "GrPink", dim = 3) +
-  #Theme
-  BivTheme
-
-#-> Bivariate ggplot level_4
-Biv_Map_4 <- ggplot() +
-  #Title
-  ggtitle(bquote(bold('Bivariate') ~ 'mean values by region L4')) +
-  #Geometry
-  geom_sf(data = Bivariate_4, mapping = aes(fill = bi_class),
-          color = "#20231fff", size = 0.001,
-          show.legend = FALSE) +
-  #Scale
-  bi_scale_fill(pal = "GrPink", dim = 3) +
-  #Theme
-  BivTheme
-
-#-> Change directory and Export
-setwd(QGI_Fo)
-ggsave("BivMap_L1.png",Biv_Map_1, width=60, height=70, limitsize = FALSE, bg = "transparent")
-ggsave("BivMap_L2.png",Biv_Map_2, width=60, height=70, limitsize = FALSE, bg = "transparent")
-ggsave("BivMap_L3.png",Biv_Map_3, width=60, height=70, limitsize = FALSE, bg = "transparent")
-ggsave("BivMap_L4.png",Biv_Map_4, width=60, height=70, limitsize = FALSE, bg = "transparent")
-
-#legend <- bi_legend(pal = "GrPink",
-#                    dim = 3,
-#                    xlab = "Mean Temperature ",
-#                    ylab = "Mean Precipitation",
-#                    size = 80)
-
-#FinalPlot <- ggdraw() +
-#  draw_plot(map, 0, 0, 1, 1) +
-#  draw_plot(legend, 0, 0, 0.2, 0.2)
+#-> Ggplot loop and export
+for(i in 1:length(Biv_Lis)){
+  #-> Define line thinckness
+  Size <- c(5,1,0.5,0.001) 
+  #-> Create plot
+  BivMap <- ggplot() +
+    #Title
+    ggtitle(paste0('Bivariate mean values by region L', i)) +
+    #Geometry
+    geom_sf(data = Biv_Lis[[i]], mapping = aes(fill = bi_class),
+            color = "#20231fff", size = Size[i],
+            show.legend = FALSE) +
+    #Scale
+    bi_scale_fill(pal = "GrPink", dim = 3) +
+    #Theme
+    BivTheme
+  
+  #-> Export Map as .png
+  ggsave(paste0("BivMap_L",i,".png"), BivMap, width=60, height=70, limitsize = FALSE, bg = "transparent")
+}
 
 
 
+
+#-> Legend
+bi_legend(pal = "GrPink",
+                    dim = 3,
+                    xlab = "Mean Temperature ",
+                    ylab = "Mean Precipitation",
+                    size = 10)

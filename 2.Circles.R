@@ -455,10 +455,3 @@ Circel_P <- ggplot()+
 ##### Export PNG file
 setwd(Circles_Fo)
 ggsave("P_Circle2.png",Circel_P,width=70, height=70, limitsize = FALSE, bg = "transparent")
-
-
-#Fechas importates que pueden influenciar la temperatura
-#Inicio_Guerra <- 1939-1881
-#Fin_Guerra <- 1945 -1881
-#Caida_Muro <- 1961 -1881
-# Poner datos de www.globalcarbonproject.org max y min de emision de CO2 

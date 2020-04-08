@@ -141,9 +141,3 @@ P_Stripes_Mod <- ggplot(Main_P_DF, aes(x = Main_P_DF$Year, y = 1, fill = Main_P_
 #-> Export created plot to png file
 setwd(Strip_Fo)
 ggsave("P_Stripes_Mod.png", P_Stripes_Mod, width=50, height=18, units = "cm", limitsize = FALSE)
-
-
-
-
-
-
