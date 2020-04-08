@@ -1,25 +1,23 @@
 #############################################################################################################
+######################################## OBJECTIVE ##########################################################
+#############################################################################################################
+# First part on a series of 4 codes to build an infographic to portray the variation of temperature and
+# precipitation in Germany since 1881. The data is downloaded from ftp://opendata.dwd.de/ and this code is 
+# developed as the final task of the Introduction to Programming and Geostatistics - MB2 class. This first
+# code aims to download all data in .gz format, convert them into raster files and extract the mean values
+# and export the information as .csv files.
+#
+# Code made by: Antonio José Castañeda Gómez (s386454)
+# Email: antonio.castanedag@gmail.com
+#
+#############################################################################################################
 ######################################## LIBRARIES ##########################################################
 #############################################################################################################
 library(RCurl)
+library(gridExtra)
 library(stringr)
 library(raster)
-library(ggplot2)
-library(tidyverse)
 library(sp)
-library(RStoolbox)
-library(gridExtra)
-library(RColorBrewer)
-library(ggdark)
-library(tidyr)
-library(gridExtra)
-library(scales)
-library(broom)
-library(grid)
-library(gridExtra)
-library(gganimate)
-library(rasterVis)
-library(ggdark)
 #############################################################################################################
 ##################################### FOLDER CREATION #######################################################
 #############################################################################################################
@@ -60,11 +58,11 @@ Precip_Fo_Rst <-  paste0(Raster_Fo,"\\2.Precipitation")
 
 setwd(Graphs_Fo)
 dir.create("1.Shapes", showWarnings = FALSE)
-Shapes_Fo <- paste0(QGI_Fo,"\\1.Shapes")
+Shapes_Fo <- paste0(Graphs_Fo,"\\1.Shapes")
 dir.create("2.Circles", showWarnings = FALSE)
-Circles_Fo <- paste0(QGI_Fo,"\\2.Circles")
+Circles_Fo <- paste0(Graphs_Fo,"\\2.Circles")
 dir.create("3.Stripes", showWarnings = FALSE)
-Stripes_Fo <- paste0(QGI_Fo,"\\3.Stripes")
+Stripes_Fo <- paste0(Graphs_Fo,"\\3.Stripes")
 dir.create("4.InkScape", showWarnings = FALSE)
 
 #############################################################################################################

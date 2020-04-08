@@ -1,4 +1,16 @@
 #############################################################################################################
+######################################## OBJECTIVE ##########################################################
+#############################################################################################################
+# Third part on a series of 4 codes to build an infographic to portray the variation of temperature and
+# precipitation in Germany since 1881. The data is downloaded from ftp://opendata.dwd.de/ and this code is 
+# developed as the final task of the Introduction to Programming and Geostatistics - MB2 class. This third
+# code aims to build stripe graphs showing the yearly variations of the temperature and precipitation in 
+# colors and lines. This code relies on the first code or in the .csv files provided in the git repository. 
+#
+# Code made by: Antonio José Castañeda Gómez (s386454)
+# Email: antonio.castanedag@gmail.com
+#
+#############################################################################################################
 ######################################## LIBRARIES ##########################################################
 #############################################################################################################
 library(stringr)

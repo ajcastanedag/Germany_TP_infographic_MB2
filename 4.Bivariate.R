@@ -1,5 +1,18 @@
-#install.packages("biscale")
-#remotes::install_github("slu-openGIS/biscale")
+#############################################################################################################
+######################################## OBJECTIVE ##########################################################
+#############################################################################################################
+# Fourth part on a series of 4 codes to build an infographic to portray the variation of temperature and
+# precipitation in Germany since 1881. The data is downloaded from ftp://opendata.dwd.de/ and this code is 
+# developed as the final task of the Introduction to Programming and Geostatistics - MB2 class. This fourth
+# code aims to build bivariate maps of Germany realting the temperature and precipitation mean values. This
+# code relies on the first code or in the .csv files provided in the git repository. 
+#
+# Code made by: Antonio José Castañeda Gómez (s386454)
+# Email: antonio.castanedag@gmail.com
+#
+#############################################################################################################
+######################################## LIBRARIES ##########################################################
+#############################################################################################################
 library(biscale)
 library(sf)
 library(raster)
