@@ -25,7 +25,6 @@ Main_Fo <- choose.dir()
 setwd(Main_Fo)
 
 ### Declare Folders
-Script_Fo <- paste0(Main_Fo,"\\1.Script")
 Data_Fo <- paste0(Main_Fo,"\\2.Data")
 Grids_Fo <- paste0(Main_Fo,"\\3.Grids")
 Raster_Fo <- paste0(Main_Fo,"\\4.Raster")
@@ -385,7 +384,7 @@ Circel_P <- ggplot()+
   ##### Title
   ggtitle(bquote(bold('PRECIPITATION') ~ 'mill graph')) +
   ##### Color Bars
-  geom_bar(aes(x = Circle_Preci_DF$Year, y = 1),stat="identity", fill = Circle_Preci_DF$color, width = 1) +
+  geom_bar(aes(x = Circle_Preci_DF$Year, y = 1), stat="identity", fill = Circle_Preci_DF$color, width = 1) +
   ##### Month Spacing in white
   geom_hline(yintercept = seq(0,11), color="gray", size= 1) +
   ##### Delete axis

@@ -26,7 +26,6 @@ Main_Fo <- choose.dir()
 setwd(Main_Fo)
 
 ### Declare Folders
-Script_Fo <- paste0(Main_Fo,"\\1.Script")
 Data_Fo <- paste0(Main_Fo,"\\2.Data")
 Graphs_Fo <- paste0(Main_Fo,"\\5.Graphs")
 
