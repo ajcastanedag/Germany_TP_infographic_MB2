@@ -51,8 +51,10 @@ Bivariate_Fo <- paste0(Graphs_Fo,"\\4.Bivariate")
 #############################################################################################################
 ######################################  Temperature Data ####################################################
 #############################################################################################################
-#-> Read *.gri path name and reblace / with // 
+#-> Read *.gri path name and 
 GridFilesTemp <- paste0(grep("*.grd*", list.files(path = Temper_Fo_Grd, pattern="*.grd$", full.names = TRUE), value=T))
+
+#-> replace / with // in  GridFilesTemp
 GridFilesTemp <- str_replace_all(string = GridFilesTemp, pattern = "/", replacement = "//" )
 
 #-> Select values ONLY if there is data for the whole year
@@ -60,18 +62,37 @@ while(length(GridFilesTemp) %% 12 != 0){
   GridFilesTemp <- GridFilesTemp[-length(GridFilesTemp)]
 }
 
+#-> Create Year List
+Year_List <- unique(substr(GridFilesTemp, 127, 130))
+
 #-> Create Stack of all grid files
-Rst_Tem_Stk <- lapply(GridFilesTemp,raster) 
+Rst_Tem_Stk <- lapply(GridFilesTemp, raster)
 Rst_Tem_Stk <- stack(Rst_Tem_Stk)
 
-#-> Calculate Mean value
-Rst_Tem_Mean <- stackApply(Rst_Tem_Stk, indices =  rep(1,nlayers(Rst_Tem_Stk)), fun = "mean", na.rm = T)
+#-> Create Dataframe to store yearly mean rasters
+RstM_Tem_Stk <- list()
+
+#-> Create mean yearly rasters
+for(i in 1:length(Year_List)){
+  stop <- 12 * i  
+  start <- stop - 11 
+  
+  Temporal_Raster <- subset(Rst_Tem_Stk, start:stop)
+  
+  RstM_Tem_Stk[i] <- stackApply(Temporal_Raster, indices = rep(1,nlayers(Temporal_Raster)), fun = "mean", na.rm = T)
+  
+  print(paste0("Raster Created year: ", Year_List[i]))
+  
+  rm(Temporal_Raster)
+}
 
 #############################################################################################################
 ##################################### Precipitation Data ####################################################
 #############################################################################################################
-#-> Read *.gri path name and reblace / with // 
+#-> Read *.gri path name and 
 GridFilesPreci <- paste0(grep("*.grd*", list.files(path = Precip_Fo_Grd, pattern="*.grd$", full.names = TRUE), value=T))
+
+#-> replace / with // in  GridFilesTemp
 GridFilesPreci <- str_replace_all(string = GridFilesPreci, pattern = "/", replacement = "//" )
 
 #-> Select values ONLY if there is data for the whole year
@@ -79,49 +100,79 @@ while(length(GridFilesPreci) %% 12 != 0){
   GridFilesPreci <- GridFilesPreci[-length(GridFilesPreci)]
 }
 
-Rst_Pre_Stk <- lapply(GridFilesPreci,raster) 
-Rst_Pre_Stk <- stack(Rst_Pre_Stk)
-Rst_Pre_Mean <- stackApply(Rst_Pre_Stk, indices =  rep(1,nlayers(Rst_Pre_Stk)), fun = "mean", na.rm = T)
+#-> Create Stack of all grid files
+Rst_Preci_Stk <- lapply(GridFilesPreci, raster)
+Rst_Preci_Stk <- stack(Rst_Preci_Stk)
+
+#-> Create Dataframe to store yearly mean rasters
+RstM_Preci_Stk <- list()
+
+#-> Create mean yearly rasters
+for(i in 1:length(Year_List)){
+  stop <- 12 * i  
+  start <- stop - 11 
+  
+  Temporal_Raster <- subset(Rst_Preci_Stk, start:stop)
+  
+  RstM_Preci_Stk[i] <- stackApply(Temporal_Raster, indices = rep(1,nlayers(Temporal_Raster)), fun = "mean", na.rm = T)
+  
+  print(paste0("Raster Created year: ", Year_List[i]))
+  
+  rm(Temporal_Raster)
+}
 
 #############################################################################################################
 ##################################### Germany Boundaries ####################################################
 #############################################################################################################
 #-> Get Shape of germany and assign coordinate system, delete all values different from Name_* and
 #   create the zonal statistics for temperature and precipitation 
-for(i in 1:4){
-  #-> Create the name for the shape to Download
-  Name <- paste0("Germany_", i)
-  #-> Create the name for the temperature stat zone
-  Name_Tmp <- paste0("Zon_Mean_Temp_", i)
-  #-> Create the name for the temperature stat zone
-  Name_Prec <- paste0("Zon_Mean_Preci_", i)
-  #-> Download data
-  Data <- getData("GADM", country="DEU", level=i, path=Shapes_Fo)
-  #-> Assign coordinate system
-  Data <- spTransform(Data, CRS=CRS("+init=epsg:31467"))
-  #-> Delet all columns different from Name_i
-  Data <-  Data[,(c(match(paste0("NAME_",i),names(Data))))]
-  #-> Create ID field for values
-  Data$ID <- seq(1,length(Data[1]))
-  #-> Extract the Mean Temperature by regions
-  Zon_Mean_Temp <- extract(Rst_Tem_Mean, Data, fun=mean, na.rm=TRUE, df=TRUE)
-  print(paste0("Zon_Mean_Temp created for level ",i))
-  #-> Extract the Mean Precipitation by regions
-  Zon_Mean_Preci <- extract(Rst_Pre_Mean, Data, fun=mean, na.rm=TRUE, df=TRUE)
-  print(paste0("Zon_Mean_Preci created for level ",i))
-  #-> Add Temp_Mean field
-  Data$Temp_Mean <- 0
-  #-> Add Preci_Mean field
-  Data$Preci_Mean <- 0
-  #-> Assign Data to name
-  assign(Name, Data)
-  #-> Assign temperature stat zone to Name_Tmp
-  assign(Name_Tmp, Zon_Mean_Temp)
-  #-> Assign temperature stat zone to Name_Prec
-  assign(Name_Prec, Zon_Mean_Preci)
-  #-> Remove data from workspace
-  rm(Data, Zon_Mean_Temp, Zon_Mean_Preci)
+#-> Create the name for the shape to Download
+Name <- "Germany_1"
+#-> Create the name for the temperature stat zone
+Name_Tmp <- "Zon_Mean_Temp_"
+#-> Create the name for the temperature stat zone
+Name_Prec <- "Zon_Mean_Preci_"
+#-> Download data
+Data <- getData("GADM", country="DEU", level=1, path= Shapes_Fo)
+#-> Assign coordinate system
+Data <- spTransform(Data, CRS=CRS("+init=epsg:31467"))
+#-> Delet all columns different from Name_i
+Data <-  Data[,(c(match("NAME_1", names(Data))))]
+#-> Create ID field for values
+Data$ID <- seq(1,length(Data[1]))
+
+#-> Create empty list to store Mean Temperature by regions by year
+Rst_M_Z_Tem_Stk <- list()
+
+#-> Create empty list to store Mean Temperature by regions by year
+Rst_M_Z_Preci_Stk <- list()
+
+#-> Extract the Mean Temperature and precipitation values by regions
+for(i in 1:length(Year_List)){
+  
+  Rst_M_Z_Tem_Stk[i] <- extract(RstM_Tem_Stk[[i]], Data, fun=mean, na.rm=TRUE, df=TRUE)
+  print(paste0("Zon_Mean_Temp created for year ",Year_List[i]))
+  
+  Rst_M_Z_Preci_Stk[i] <- extract(RstM_Preci_Stk[[i]], Data, fun=mean, na.rm=TRUE, df=TRUE)
+  print(paste0("Zon_Mean_Preci created for year ",Year_List[i]))
 }
+
+#-> Add Temp_Mean field
+Data$Temp_Mean <- 0
+#-> Add Preci_Mean field
+Data$Preci_Mean <- 0
+
+
+######################################################################################### acá voy! 
+
+#-> Assign Data to name
+assign(Name, Data)
+#-> Assign temperature stat zone to Name_Tmp
+assign(Name_Tmp, Zon_Mean_Temp)
+#-> Assign temperature stat zone to Name_Prec
+assign(Name_Prec, Zon_Mean_Preci)
+#-> Remove data from workspace
+rm(Data, Zon_Mean_Temp, Zon_Mean_Preci)
 
 #############################################################################################################
 ########################################### Match Values ####################################################
@@ -140,75 +191,19 @@ for(i in 1:length(Germany_1$ID)){
   }
 }
 
-#-> Assign values from statistical Zone 2
-for(i in 1:length(Germany_2$ID)){
-  for(j in 1: length(Germany_2$Temp_Mean)){
-    if(as.numeric(Germany_2$ID[i]) == Zon_Mean_Temp_2$ID[j]){
-      Germany_2$Temp_Mean[i] <- Zon_Mean_Temp_2$index_1[j]
-    }
-  }
-  for(k in 1: length(Germany_2$Preci_Mean)){
-    if(as.numeric(Germany_2$ID[i]) == Zon_Mean_Preci_2$ID[k]){
-      Germany_2$Preci_Mean[i] <- Zon_Mean_Preci_2$index_1[k]
-    }
-  }
-}
-
-#-> Assign values from statistical Zone 3
-for(i in 1:length(Germany_3$ID)){
-  for(j in 1: length(Germany_3$Temp_Mean)){
-    if(as.numeric(Germany_3$ID[i]) == Zon_Mean_Temp_3$ID[j]){
-      Germany_3$Temp_Mean[i] <- Zon_Mean_Temp_3$index_1[j]
-    }
-  }
-  for(k in 1: length(Germany_3$Preci_Mean)){
-    if(as.numeric(Germany_3$ID[i]) == Zon_Mean_Preci_3$ID[k]){
-      Germany_3$Preci_Mean[i] <- Zon_Mean_Preci_3$index_1[k]
-    }
-  }
-  print(paste0("Progress: ",(i*100/4680)))
-}
-
-#-> Assign values from statistical Zone 4
-for(i in 1:length(Germany_4$ID)){
-  for(j in 1: length(Germany_4$Temp_Mean)){
-    if(as.numeric(Germany_4$ID[i]) == Zon_Mean_Temp_4$ID[j]){
-      Germany_4$Temp_Mean[i] <- Zon_Mean_Temp_4$index_1[j]
-    }
-  }
-  for(k in 1: length(Germany_4$Preci_Mean)){
-    if(as.numeric(Germany_4$ID[i]) == Zon_Mean_Preci_4$ID[k]){
-      Germany_4$Preci_Mean[i] <- Zon_Mean_Preci_4$index_1[k]
-    }
-  }
-  print(paste0("Progress: ",(i*100/11302)))
-}
 
 #-> Convert geometry to SF object
 Germany_1 <- st_as_sf(Germany_1)
-Germany_2 <- st_as_sf(Germany_2)
-Germany_3 <- st_as_sf(Germany_3)
-Germany_4 <- st_as_sf(Germany_4)
 
 #############################################################################################################
 ######################################### Bivariate Data ####################################################
 #############################################################################################################
 #-> Create Bivariate values
 Bivariate_1 <- bi_class(Germany_1, x = Temp_Mean, y = Preci_Mean, style = "quantile", dim = 3)
-Bivariate_2 <- bi_class(Germany_2, x = Temp_Mean, y = Preci_Mean, style = "quantile", dim = 3)
-Bivariate_3 <- bi_class(Germany_3, x = Temp_Mean, y = Preci_Mean, style = "quantile", dim = 3)
-Bivariate_4 <- bi_class(Germany_4, x = Temp_Mean, y = Preci_Mean, style = "quantile", dim = 3)
 
 #-> Save Bivariate Maps as gpkg
 setwd(Shapes_Fo)
 st_write(Bivariate_1, dsn="Bivariate_1.gpkg", layer='Bivariate')
-st_write(Bivariate_2, dsn="Bivariate_2.gpkg", layer='Bivariate')
-st_write(Bivariate_3, dsn="Bivariate_3.gpkg", layer='Bivariate')
-st_write(Bivariate_4, dsn="Bivariate_4.gpkg", layer='Bivariate')
-
-#-> Delete "NA-NA" values
-Bivariate_3 <- Bivariate_3[!grepl("NA-NA", Bivariate_3$bi_class),]
-Bivariate_4 <- Bivariate_4[!grepl("NA-NA", Bivariate_4$bi_class),]
 
 #-> Check classes
 unique(Bivariate_1$bi_class)
@@ -224,10 +219,10 @@ setwd(Bivariate_Fo)
 
 #-> Bivariate map theme
 BivTheme <- theme(panel.background = element_blank(),
-               plot.background = element_blank(),
-               panel.grid = element_line(colour="white", size=1),
-               plot.title = element_text(size = 130, color= "white"),
-               axis.text = element_text(size = 50, color= "white")) 
+                  plot.background = element_blank(),
+                  panel.grid = element_line(colour="white", size=1),
+                  plot.title = element_text(size = 130, color= "white"),
+                  axis.text = element_text(size = 50, color= "white")) 
 
 #-> List for produce graphs in loop
 Biv_Lis <- list(Bivariate_1, Bivariate_2, Bivariate_3, Bivariate_4)
@@ -255,7 +250,7 @@ for(i in 1:length(Biv_Lis)){
 
 #-> Legend
 bi_legend(pal = "GrPink",
-                    dim = 3,
-                    xlab = "Mean Temperature ",
-                    ylab = "Mean Precipitation",
-                    size = 10)
+          dim = 3,
+          xlab = "Mean Temperature ",
+          ylab = "Mean Precipitation",
+          size = 10)
