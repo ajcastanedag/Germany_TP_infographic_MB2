@@ -191,7 +191,7 @@ for(i in 1:12){
 }
 
 # Change to capital letters all the month list to be ploted
-Month <- as.character(lapply(Mes, toupper))
+Month <- as.character(lapply(Month, toupper))
 
 ###-> Create GGPLOT
 Circel_T <- ggplot()+
@@ -261,13 +261,13 @@ Circel_T <- ggplot()+
   # Tick marks
   geom_segment(aes(x=140, xend=160,y=seq(0,11), yend=seq(0,11)), colour="white", size = 4)+
   # Labels
-  geom_text(mapping=aes(x=155, y=seq(0.4,11.4), label=Mes), color= "white", fontface = "bold", size = 40, angle=seq(-13,-343,length.out=12), vjust=-0.4, hjust=0) +
+  geom_text(mapping=aes(x=155, y=seq(0.4,11.4), label=Month), color= "white", fontface = "bold", size = 40, angle=seq(-13,-343,length.out=12), vjust=-0.4, hjust=0) +
   ##### Wrap Y Coordinate       
-  coord_polar("Y")
+  coord_polar("y")
 
 ##### Export PNG file
 setwd(Circles_Fo)
-ggsave("T_Circlex.png",Circel_T,width=70, height=70, limitsize = FALSE, bg = "transparent")
+ggsave("T_Circle.png",Circel_T,width=70, height=70, limitsize = FALSE, bg = "transparent")
 
 #############################################################################################################
 ###############################  Big Circle Precipitation Graph  ############################################
