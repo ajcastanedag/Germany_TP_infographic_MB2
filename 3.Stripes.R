@@ -86,7 +86,7 @@ Main_T_DF$Trend <- model_gif$fitted
 #-> Delete model
 rm(model_gif)
 
-#-> Create Plot
+  #-> Create Plot
 T_Stripes_Mod <- ggplot(Main_T_DF, aes(x = Main_T_DF$Year, y = 1, fill = Main_T_DF$Mean)) +
   geom_tile()+
   scale_x_continuous(breaks=seq(Main_T_DF$Year[1],Main_T_DF$Year[length(Main_T_DF$Year)],6))+
