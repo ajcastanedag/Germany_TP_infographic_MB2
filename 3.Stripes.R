@@ -26,16 +26,16 @@ Main_Fo <- rchoose.dir()
 setwd(Main_Fo)
 
 ### Declare Folders
-Data_Fo <- paste0(Main_Fo,"\\2.Data")
-Graphs_Fo <- paste0(Main_Fo,"\\5.Graphs")
+Data_Fo <- paste0(Main_Fo,"./2.Data")
+Graphs_Fo <- paste0(Main_Fo,"./5.Graphs")
 
 ### Declare SubFolders
-Temper_Fo_Or <- paste0(Data_Fo,"\\1.Temperature")
-Precip_Fo_Or <-  paste0(Data_Fo,"\\2.Precipitation")
+Temper_Fo_Or <- paste0(Data_Fo,"./1.Temperature")
+Precip_Fo_Or <-  paste0(Data_Fo,"./2.Precipitation")
 
-Graphs_Fo <- paste0(Main_Fo,"\\5.Graphs")
+Graphs_Fo <- paste0(Main_Fo,"./5.Graphs")
 
-Strip_Fo <- paste0(Graphs_Fo,"\\3.Stripes")
+Strip_Fo <- paste0(Graphs_Fo,"./3.Stripes")
 
 #############################################################################################################
 #####################################   Import Data Frame   #################################################
