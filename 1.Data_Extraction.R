@@ -53,9 +53,9 @@ Precip_Fo_Grd <-  paste0(Grids_Fo,"./2.Precipitation")
 
 setwd(Raster_Fo)
 dir.create("1.Temperature", showWarnings = FALSE)
-Temper_Fo_Rst <- paste0(Raster_Fo,"\\1.Temperature")
+Temper_Fo_Rst <- paste0(Raster_Fo,"./1.Temperature")
 dir.create("2.Precipitation", showWarnings = FALSE)
-Precip_Fo_Rst <-  paste0(Raster_Fo,"\\2.Precipitation")
+Precip_Fo_Rst <-  paste0(Raster_Fo,"./2.Precipitation")
 
 setwd(Graphs_Fo)
 dir.create("1.Shapes", showWarnings = FALSE)
