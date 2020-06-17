@@ -104,7 +104,7 @@ for(i in 1:length(Month_ID)){
   dir.create(tmp_dir,showWarnings = FALSE)
   
   #-> Change direcotry to subfolders
-  setwd(paste0(Temper_Fo_Or,"\\",tmp_dir))
+  setwd(paste0(Temper_Fo_Or,"/",tmp_dir))
   
   #-> Change the url of the month mean temperature in the loop
   http <- paste0(Temp_Url,Month_ID[i])
@@ -162,7 +162,7 @@ for(k in 1:length(Month_ID)){
   
   #-> Create temporal directory to loop over folders
   tmp_dir <- Month_ID[k]
-  setwd(paste0(Temper_Fo_Or,"\\",tmp_dir))
+  setwd(paste0(Temper_Fo_Or,"/",tmp_dir))
   
   #-> Get all succesfully downloaded folders and save the names (again) 
   filenames <- paste0(grep("*temp*", list.files(path = getwd(), pattern="*.gz$", full.names = FALSE), value=T))
@@ -180,7 +180,7 @@ for(k in 1:length(Month_ID)){
       #Project Raster
       crs(my_raster) <- CRS("+init=epsg:31467")
       #Save single File in Grid Folder
-      Sinlge_Rst_Name <- paste0(Temper_Fo_Grd,"\\",
+      Sinlge_Rst_Name <- paste0(Temper_Fo_Grd,"/",
                                 substr(str_extract(filenames[l], "[[:digit:]]+"),1,4),
                                 "_",
                                 substr(Month_ID[k],1,2),
@@ -202,7 +202,7 @@ for(k in 1:length(Month_ID)){
       #Project Raster
       crs(current_raster) <- CRS("+init=epsg:31467")
       #Save single File in Grid Folder
-      Sinlge_Rst_Name <- paste0(Temper_Fo_Grd,"\\",
+      Sinlge_Rst_Name <- paste0(Temper_Fo_Grd,"/",
                                 substr(str_extract(filenames[l], "[[:digit:]]+"),1,4),
                                 "_",
                                 substr(Month_ID[k],1,2),
@@ -251,11 +251,11 @@ for(k in 1:length(Month_ID)){
   Monthly_T_Rst_List[k] <- Temp_File_Name
   
   #-> Save Raster Stack
-  if(file.exists(paste0(Temper_Fo_Rst,"\\","T_",k,"_",Month_List[k],".grd"))){
+  if(file.exists(paste0(Temper_Fo_Rst,"/","T_",k,"_",Month_List[k],".grd"))){
     print("Raster exist...")
   } else{
     crs(my_raster) <- CRS("+init=epsg:31467")
-    writeRaster(my_raster,paste0(Temper_Fo_Rst,"\\","T_",k,"_",Month_List[k]))
+    writeRaster(my_raster,paste0(Temper_Fo_Rst,"/","T_",k,"_",Month_List[k]))
     print(paste0("T_",k,"_",Month_List[k], " raster saved..."))
   }
   
@@ -333,7 +333,7 @@ for(i in 1:length(Month_ID)){
   dir.create(tmp_dir,showWarnings = FALSE)
   
   #-> Change direcotry to subfolders
-  setwd(paste0(Precip_Fo_Or,"\\",tmp_dir))
+  setwd(paste0(Precip_Fo_Or,"/",tmp_dir))
   
   #-> Change the url of the month mean temperature in the loop
   http <- paste0(Prec_Url,Month_ID[i])
@@ -391,7 +391,7 @@ for(k in 1:length(Month_ID)){
   
   #-> Create temporal directory to loop over folders
   tmp_dir <- Month_ID[k]
-  setwd(paste0(Precip_Fo_Or,"\\",tmp_dir))
+  setwd(paste0(Precip_Fo_Or,"/",tmp_dir))
   
   #-> Get all succesfully downloaded folders and save the names (again) 
   filenames <- paste0(grep("*prec*", list.files(path = getwd(), pattern="*.gz$", full.names = FALSE), value=T))
@@ -407,7 +407,7 @@ for(k in 1:length(Month_ID)){
       #Project Raster
       crs(my_raster) <- CRS("+init=epsg:31467")
       #Save single File in Grid Folder
-      Sinlge_Rst_Name <- paste0(Precip_Fo_Grd,"\\",
+      Sinlge_Rst_Name <- paste0(Precip_Fo_Grd,"/",
                                 substr(str_extract(filenames[l], "[[:digit:]]+"),1,4),
                                 "_",
                                 substr(Month_ID[k],1,2),
@@ -427,7 +427,7 @@ for(k in 1:length(Month_ID)){
       #Project Raster
       crs(current_raster) <- CRS("+init=epsg:31467")
       #Save single File in Grid Folder
-      Sinlge_Rst_Name <- paste0(Precip_Fo_Grd,"\\",
+      Sinlge_Rst_Name <- paste0(Precip_Fo_Grd,"/",
                                 substr(str_extract(filenames[l], "[[:digit:]]+"),1,4),
                                 "_",
                                 substr(Month_ID[k],1,2),
@@ -476,11 +476,11 @@ for(k in 1:length(Month_ID)){
   Monthly_P_Rst_List[k] <- Temp_File_Name
   
   #-> Save Raster Stack
-  if(file.exists(paste0(Precip_Fo_Rst,"\\","P_",k,"_",Month_List[k],".grd"))){
+  if(file.exists(paste0(Precip_Fo_Rst,"/","P_",k,"_",Month_List[k],".grd"))){
     print("Raster exist...")
   } else{
     crs(my_raster) <- CRS("+init=epsg:31467")
-    writeRaster(my_raster,paste0(Precip_Fo_Rst,"\\","P_",k,"_",Month_List[k]))
+    writeRaster(my_raster,paste0(Precip_Fo_Rst,"/","P_",k,"_",Month_List[k]))
     print(paste0("P_",k,"_",Month_List[k], " raster saved..."))
   }
   
