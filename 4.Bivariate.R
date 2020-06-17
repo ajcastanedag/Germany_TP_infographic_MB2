@@ -26,7 +26,7 @@ library(cowplot)
 ##################################### FOLDER DECLARATION ####################################################
 #############################################################################################################
 ### Choose Main Folder
-Main_Fo <- choose.dir()
+Main_Fo <- rchoose.dir()
 setwd(Main_Fo)
 
 ### Declare Folders
